@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web bán hàng</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+<!-- Bắt đầu code-->
+<div class="container-fluid">
+    <!--    row 1-->
+    <div class="row">
+        <!--        nút home-->
+        <a class="navbar-brand" href="/">Trang chủ</a>
+
+        <!--        search-->
+        <div class="input-group w-50">
+            <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm"
+                   aria-label="Example text with button addon"
+                   aria-describedby="button-addon1">
+            <div class="input-group-prepend">
+                <button class="btn btn-md btn-outline-primary m-0 px-3 py-2 z-depth-0 waves-effect" type="button"
+                        id="button-addon1">Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!--        nav list-->
+    <ul class="nav grey lighten-4 py-4">
+        <li class="nav-item">
+            <a class="nav-link active" type="button"><i class="fas fa-align-justify mr-1"></i>Danh mục sản phẩm</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" type="button" onclick="doIt0()">Thêm danh mục</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" type="button">Thêm sản phẩm</a>
+        </li>
+    </ul>
+
+    <!--    row 2-->
+    <div class="row">
+        <div class="col-5">
+            <div>
+                <div class="list-group" id="list-tab" role="tablist">
+                    <% result.map((row)=>{ %>
+                        <a class="list-group-item list-group-item-action"
+                           role="tab" aria-controls="home">
+                            <%= row.name_category %>
+                        </a>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+
+        <!--        Hiển thị các sản phẩm-->
+        <div class="col-7">
+            <div id="data">
+                <!-- Card deck -->
+                <div class="card-deck">
+
+                    <!-- Card1 -->
+                    <div class="card mb-4">
+
+                        <!--Card image-->
+                        <div class="view overlay">
+                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/16.jpg"
+                                 alt="Card image cap">
+                            <a href="#!">
+                                <div class="mask rgba-white-slight"></div>
+                            </a>
+                        </div>
+
+                        <!--Card content-->
+                        <a class="card-body" href="#!">
+                            <!--Title-->
+                            <h4 class="card-title">Card title</h4>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of
+                                the card's
+                                content.</p>
+                        </a>
+
+                    </div>
+                    <!--end Card1 -->
+
+                    <!-- Card2 -->
+                    <div class="card mb-4">
+
+                        <!--Card image-->
+                        <div class="view overlay">
+                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/14.jpg"
+                                 alt="Card image cap">
+                            <a href="#!">
+                                <div class="mask rgba-white-slight"></div>
+                            </a>
+                        </div>
+
+                        <!--Card content-->
+                        <a class="card-body" href="#!">
+                            <!--Title-->
+                            <h4 class="card-title">Card title</h4>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of
+                                the card's
+                                content.</p>
+                        </a>
+
+                    </div>
+                    <!--end Card2 -->
+
+                    <!-- Card3 -->
+                    <div class="card mb-4">
+
+                        <!--Card image-->
+                        <div class="view overlay">
+                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/15.jpg"
+                                 alt="Card image cap">
+                            <a href="#!">
+                                <div class="mask rgba-white-slight"></div>
+                            </a>
+                        </div>
+
+                        <!--Card content-->
+                        <a class="card-body" href="#!">
+
+                            <!--Title-->
+                            <h4 class="card-title">Card title</h4>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of
+                                the card's
+                                content.</p>
+                        </a>
+                    </div>
+                    <!--end Card3 -->
+
+                </div>
+                <!-- Card deck -->
+            </div>
+            <div>
+                Kết quả của bạn là: <span id="nameee"></span>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<!-- Kết thúc code-->
+
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!--nút append phần thêm danh mục-->
+<script>
+    const doIt0 = async () => {
+        let html = "";
+        html += "<div class='h2-responsive'>Thêm danh mục</div>\n" +
+            "<div class='md-form'>\n" +
+            "    <i class='fas fa-pen prefix'></i>\n" +
+            "    <input type='text' id='inputNameCategory' name='name_category' class='form-control'>\n" +
+            "    <label for='inputNameCategory'>Tên danh mục</label>\n" +
+            "    <button type='button' onclick='doIt1()' class='btn btn-outline-elegant'>Thêm danh mục</button>\n" +
+            "</div>";
+        document.getElementById("data").innerHTML = html;
+    }
+</script>
+
+<!--nút để thêm danh mục-->
+<script>
+    const doIt1 = async()=>{
+        let name_category = document.getElementById("inputNameCategory").value;
+        axios
+            .get(`/index/${name_category}`)
+            .then((result) => {
+            document.getElementById('nameee').innerHTML = result.data.output
+            console.log(result)
+        });
+    }
+</script>
+</body>
+</html>
