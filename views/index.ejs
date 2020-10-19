@@ -36,39 +36,44 @@
         </div>
     </div>
 
-    <!--        nav list-->
-    <ul class="nav grey lighten-4 py-4">
-        <li class="nav-item">
-            <a class="nav-link active" type="button"><i class="fas fa-align-justify mr-1"></i>Danh mục sản phẩm</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" type="button" onclick="doIt0()">Thêm danh mục</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" type="button">Thêm sản phẩm</a>
-        </li>
-    </ul>
+    <div id="data_viewAllProduct">
+        <!--        nav list-->
+        <ul class="nav grey lighten-4 py-4">
+            <li class="nav-item">
+                <a class="nav-link active" type="button"><i class="fas fa-align-justify mr-1"></i>Danh mục sản phẩm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" type="button" onclick="doIt0()">Thêm danh mục</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" type="button" onclick="doIt1()">Thêm sản phẩm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/viewAllProduct">Xem tổng quan các sản phẩm</a>
+            </li>
+        </ul>
 
-    <!--    row 2-->
-    <div class="row">
-        <div class="col-5">
-            <div>
-                <div class="list-group" id="list-tab" role="tablist">
-                    <% result.map((row)=>{ %>
-                        <a class="list-group-item list-group-item-action"
-                           role="tab" aria-controls="home">
-                            <%= row.name_category %>
-                        </a>
-                    <% }) %>
+        <!--    row 2-->
+        <div class="row">
+
+            <!--        phần danh mục-->
+            <div class="col-5">
+                <div>
+                    <div class="list-group" id="list-tab" role="tablist">
+                        <% result.map((row)=>{ %>
+                            <a class="list-group-item list-group-item-action"
+                               role="tab" aria-controls="home">
+                                <%= row.name_category %>
+                            </a>
+                        <% }) %>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!--        Hiển thị các sản phẩm-->
-        <div class="col-7">
-            <div id="data">
+            <!--        Hiển thị các sản phẩm-->
+            <div class="col-7">
                 <!-- Card deck -->
-                <div class="card-deck">
+                <div id="display0" class="card-deck">
 
                     <!-- Card1 -->
                     <div class="card mb-4">
@@ -149,19 +154,101 @@
                     <!--end Card3 -->
 
                 </div>
-                <!-- Card deck -->
-            </div>
-            <div>
-                Kết quả của bạn là: <span id="nameee"></span>
+
+                <!--            phần thêm sản phẩm bị hide-->
+                <div id="display1" style="display: none">
+                    <div class="h2-responsive mb-5">Thêm sản phẩm</div>
+
+                    <div id="message" style="color: green"></div>
+                    <!--                    form thêm sản phẩm -->
+                    <!--                        ảnh-->
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <div>
+                                Chọn hình ảnh minh họa cho sản phẩm<span style="color: red"> *</span>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <input type="file" id="myFile" name="myFile">
+                        </div>
+                    </div>
+                    <!--                        tên sp-->
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <div>
+                                Tên sản phẩm<span style="color: red"> *</span>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" id="name_product" name="name_product" class="form-control"
+                                   required="required">
+                        </div>
+                    </div>
+                    <!--                        giá sp-->
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <div>
+                                Giá sản phẩm<span style="color: red"> *</span>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" id="cost_product" name="cost_product" class="form-control"
+                                   required="required">
+                        </div>
+                    </div>
+                    <!--                        danh mục sp-->
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <div>
+                                Danh mục sản phẩm
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <select id="select_category" name="select_category" class="browser-default custom-select">
+                                <% result.map((row)=>{ %>
+                                    <option value="<%= row.id %>"><%= row.name_category %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                    <!--                        mô tả chi tiết-->
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <div>
+                                Mô tả
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div id="ckeditor"></div>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="doIt3()" class="btn btn-outline-brown">Thêm sản phẩm</button>
+                </div>
+
+                <!--            phần danh mục bị hide-->
+                <div id="display2" style="display: none">
+                    <div class="h2-responsive">Thêm danh mục</div>
+                    <div class="md-form">
+                        <i class="fas fa-pen prefix"></i>
+                        <input type="text" id="inputNameCategory" name="name_category" class="form-control">
+                        <label for="inputNameCategory">Tên danh mục</label>
+                        <button type="submit" class="btn btn-outline-elegant">Thêm danh mục</button>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
-
-
 </div>
 <!-- Kết thúc code-->
 
+<script>
+
+</script>
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
 <!-- jQuery -->
 <script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
 <!-- Bootstrap tooltips -->
@@ -173,32 +260,120 @@
 <!--axios-->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+
 <!--nút append phần thêm danh mục-->
 <script>
     const doIt0 = async () => {
-        let html = "";
-        html += "<div class='h2-responsive'>Thêm danh mục</div>\n" +
-            "<div class='md-form'>\n" +
-            "    <i class='fas fa-pen prefix'></i>\n" +
-            "    <input type='text' id='inputNameCategory' name='name_category' class='form-control'>\n" +
-            "    <label for='inputNameCategory'>Tên danh mục</label>\n" +
-            "    <button type='button' onclick='doIt1()' class='btn btn-outline-elegant'>Thêm danh mục</button>\n" +
-            "</div>";
-        document.getElementById("data").innerHTML = html;
+        const displayBlock0 = document.getElementById("display0");
+        const displayBlock1 = document.getElementById("display1");
+        const displayBlock2 = document.getElementById("display2");
+
+        if (displayBlock2.style.display === "none") {
+            displayBlock2.style.display = "block";
+        }
+        if (displayBlock0.style.display === "block") {
+            displayBlock0.style.display = "none";
+        }
+        if (displayBlock1.style.display === "block") {
+            displayBlock1.style.display = "none";
+        } else {
+            displayBlock0.style.display = "none";
+            displayBlock1.style.display = "none";
+        }
     }
 </script>
 
-<!--nút để thêm danh mục-->
+<!--nút append phần thêm sản phẩm-->
 <script>
-    const doIt1 = async()=>{
-        let name_category = document.getElementById("inputNameCategory").value;
-        axios
-            .get(`/index/${name_category}`)
-            .then((result) => {
-            document.getElementById('nameee').innerHTML = result.data.output
-            console.log(result)
-        });
+    const doIt1 = async () => {
+        const displayBlock0 = document.getElementById("display0");
+        const displayBlock1 = document.getElementById("display1");
+        const displayBlock2 = document.getElementById("display2");
+
+        if (displayBlock1.style.display === "none") {
+            displayBlock1.style.display = "block";
+        }
+        if (displayBlock0.style.display === "block") {
+            displayBlock0.style.display = "none";
+        }
+        if (displayBlock2.style.display === "block") {
+            displayBlock2.style.display = "none";
+        } else {
+            displayBlock0.style.display = "none";
+            displayBlock2.style.display = "none";
+        }
     }
 </script>
+
+<!--set up phần thêm sản phẩm-->
+<script>
+    // cài đặt lưu file ảnh
+    let file;
+    document.querySelector("#myFile").onchange = (evt) => {
+        file = evt.target.files[0];
+        console.log(file);
+    };
+
+    <!--cài đặt ckeditor-->
+    let editor;
+    const initEditor = async () => {
+        editor = await ClassicEditor
+            .create(document.getElementById("ckeditor"), {
+                cloudServices: {
+                    uploadUrl: "https://75171.cke-cs.com/easyimage/upload/",
+                    tokenUrl: "https://75171.cke-cs.com/token/dev/a8c66df7e644b064314258f9274a73a02d361d2236ee2da40da2f66bf333"
+                }
+            });
+    }
+    initEditor();
+
+    const doIt3 = async () => {
+        let description = editor.data;
+        let name_product = document.getElementById("name_product").value;
+        let cost_product = document.getElementById("cost_product").value;
+        let id_of_category = document.getElementById("select_category").value;
+
+        const formData = new FormData();
+        const imagefile = document.querySelector('#myFile');
+        formData.append("id_of_category", id_of_category)
+        formData.append("image", imagefile.files[0]);
+        formData.append("name_product", name_product);
+        formData.append("cost_product", cost_product);
+        formData.append("description", description);
+        try {
+            const result = await axios.post(`/addProduct`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(result)
+            const body = result.data;
+            let html1 = "";
+            if (body.msg === 'is_allowed_to_post') {
+                html1 += "<div style='color: green'>Thêm sản phẩm thành công</div>\n";
+                document.getElementById("message").innerHTML = html1;
+            }
+            if (body.msg === 'no_files_have_been_selected') {
+                html1 += "<div style='color: red'>Bạn bắt buộc phải chọn ảnh minh họa cho sản phẩm</div>\n";
+                document.getElementById("message").innerHTML = html1;
+            }
+            if (body.msg === 'important_parts_must_not_be_removed') {
+                html1 += "<div style='color: red'>Bạn không thể bỏ qua các mục quan trọng</div>\n";
+                document.getElementById("message").innerHTML = html1;
+            }
+            if (body.msg === 'this_is_not_image') {
+                html1 += "<div style='color: red'>File bạn vừa chọn không phải là ảnh</div>\n";
+                document.getElementById("message").innerHTML = html1;
+            }
+            // else {
+            //     html1 += "<div style='color: red'>Có lỗi gì đó xảy ra</div>\n";
+            //     document.getElementById("message").innerHTML = html1;
+            // }
+        } catch (e) {
+            console.error(e)
+        }
+    }
+</script>
+
 </body>
 </html>

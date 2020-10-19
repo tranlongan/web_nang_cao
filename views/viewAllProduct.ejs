@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div id="display0">
+            <div class="mb-4">
+                <!--        nút home-->
+                <a class="navbar-brand" href="/">Trang chủ</a>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-2">
+                    Tìm kiếm theo danh mục
+                </div>
+                <div class="col-5">
+                    <select class="browser-default custom-select">
+                        <% result1.map((row1)=>{ %>
+                            <option><%= row1.name_category %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <button class="m-0 p-2 btn btn-amber">Tìm kiếm</button>
+                </div>
+            </div>
+            <% result2.map((row2)=>{ %>
+                <ul class="nav mb-4">
+                    <li class="nav-item">
+                        <img style="height: 96px; width: 76px" src="<%= row2.link_image %>"
+                             alt="Generic placeholder image">
+
+                    </li>
+                    <li class="nav-item ml-3 mt-4 w-50">
+                <span class="media-body">
+                    <h5 class="mt-0 mb-2 font-weight-bold"><%= row2.name_product %></h5>
+                    <!--Review-->
+                    <i class="fas fa-star blue-text"> </i>
+                    <i class="fas fa-star blue-text"> </i>
+                    <i class="fas fa-star blue-text"> </i>
+                    <i class="fas fa-star blue-text"> </i>
+                    <i class="fas fa-star blue-text"> </i>
+                </span>
+                    </li>
+                    <li class="nav-item mt-4 ml-3">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/viewDetailProduct?id=<%=row2.id%>">Xem</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link">Xóa</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            <% }) %>
+        </div>
+        <!--*********************-->
+    </div>
+</div>
+
+
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+
+<script>
+    const doIt4 = async (id) => {
+        try {
+            axios.get('/viewAllProduct', {
+                params: {
+                    "id_to_get": id
+                }
+            })
+        }catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+</body>
+</html>
