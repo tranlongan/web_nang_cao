@@ -1,7 +1,6 @@
 const connection = require('../db');
 const multer = require('multer');
 const path = require('path');
-var ejs = require('ejs');
 
 
 // set up cho việc upload ảnh
@@ -36,12 +35,15 @@ function checkFileType(file, cb) {
 // Kết thúc phần set up ảnh
 
 
-// load lại home và phần danh mục
+// load lại home , phần danh mục và phần sản phẩm
 const loadCategoryAndHome = function (req, res, next) {
     const sql = `SELECT * FROM danh_muc`;
-    connection.query(sql, (err, result, fields) => {
-        console.log(result)
-        res.render('index', {result})
+    const sql1 = `SELECT * FROM san_pham`
+    connection.query(sql, (err, result) => {
+        connection.query(sql1, (err, result1) => {
+            console.log(result)
+            res.render('index', {result, result1})
+        })
     });
 };
 
@@ -67,9 +69,8 @@ const addProduct = (req, res) => {
                 res.json({
                     msg: 'no_files_have_been_selected'
                 })
-
             } else {
-                const {id_of_category, name_product, cost_product,description} = req.body;
+                const {id_of_category, name_product, cost_product, description} = req.body;
                 if (name_product === '' || cost_product === '') {
                     res.json({
                         msg: 'important_parts_must_not_be_removed'
@@ -88,7 +89,6 @@ const addProduct = (req, res) => {
                             console.log(req.file.filename);
                         })
                     })
-
                 }
             }
         }
@@ -96,40 +96,114 @@ const addProduct = (req, res) => {
 }
 
 // xem tất cả các sản phẩm
-const viewAllProduct = (req, res, next ) =>{
+const viewAllProduct = (req, res, next) => {
     const sql1 = `SELECT * FROM danh_muc`;
     const sql2 = `SELECT * FROM san_pham`;
+    // const {data_search_product} = req.body;
+    // const sql3 = `SELECT * FROM san_pham WHERE name_product, name_category = '${data_search_product}'`;
     // sql bảng danh mục
-    connection.query(sql1, (err,result1)=>{
+    connection.query(sql1, (err, result1) => {
         // sql bảng sản phẩm
-        connection.query(sql2, (err,result2)=>{
-            res.render('viewAllProduct',{result1, result2});
+        connection.query(sql2, (err, result2) => {
+            //sql sản phẩm nhưng để tìm kiếm
+            // connection.query(sql3, (err, result3) => {
+            res.render('viewAllProduct', {result1, result2});
+            // })
         })
     })
 
 
 }
 
-const viewDetailProduct = (req, res, next) =>{
+// xem chi tiết các sản phẩm, cho phép sửa nội dung sản phẩm
+const viewDetailProduct = (req, res, next) => {
     let id = req.query.id;
     const sql1 = `SELECT * FROM danh_muc`;
     const sql2 = `SELECT * FROM san_pham`;
     const sql3 = `SELECT * FROM san_pham WHERE id = '${id}'`;
 
-    connection.query(sql1, (err, result1)=>{
-        connection.query(sql2, (err, result2)=>{
-            connection.query(sql3,(err, result3)=>{
+    connection.query(sql1, (err, result1) => {
+        connection.query(sql2, (err, result2) => {
+            connection.query(sql3, (err, result3) => {
                 if (err) throw err
-                res.render('viewDetailProduct', {result1,result2,result3})
+                res.render('viewDetailProduct', {result1, result2, result3})
             })
         })
     })
 }
 
+// chỉnh sửa sản phẩm
+const editProduct = (req, res) => {
+    upload(req, res, (err) => {
+        if (err) {
+            res.json({
+                msg: err
+            })
+        } else {
+            let id_geted = req.query.id;
+            const {id_of_category1, name_product1, cost_product1, description1} = req.body;
+            const sql4 = `SELECT name_category FROM danh_muc WHERE id = '${id_of_category1}'`;
+            const sql6 = `SELECT link_image FROM san_pham WHERE id = '${id_geted}'`
+            if (req.file === undefined) {
+                connection.query(sql6, (err, result6) => {
+                    connection.query(sql4, (err, result4) => {
+                        let data_name_category1 = (result4[0].name_category);
+                        let data_link_image1 = result6[0].link_image;
+                        const sql5 = `UPDATE san_pham SET id_of_category ='${id_of_category1}', 
+                            link_image = '${data_link_image1}', name_product = '${name_product1}', 
+                            cost ='${cost_product1}', name_category = '${data_name_category1}', 
+                            description = '${description1}' WHERE id = '${id_geted}'`;
+                        connection.query(sql5, (err, result5) => {
+                            res.json({
+                                msg: 'successful_editing'
+                            })
+                            console.log(result6[0].link_image);
+                        })
+                    })
+                })
+            } else {
+                connection.query(sql4, (err, result4) => {
+                    let data_name_category1 = (result4[0].name_category);
+                    const sql5 = `UPDATE san_pham SET id_of_category ='${id_of_category1}', 
+                            link_image = '/upload/${req.file.filename}', name_product = '${name_product1}', 
+                            cost ='${cost_product1}', name_category = '${data_name_category1}', 
+                            description = '${description1}' WHERE id = '${id_geted}'`;
+                    connection.query(sql5, (err, result5) => {
+                        res.json({
+                            msg: 'successful_editing'
+                        })
+                        console.log(req.file.filename);
+                    })
+                })
+            }
+        }
+    });
+}
+
+// Tìm kiếm sản phẩm
+const searchProduct = (req, res) => {
+    const {data_input_search} = req.body;
+    const sql = `SELECT * FROM san_pham WHERE name_category = '${data_input_search}'`;
+    connection.query(sql, (err, result_search) => {
+        res.json({result_search});
+        console.log(result_search);
+    })
+}
+
+const viewProductByCategory = (req, res) => {
+    let idGeted = req.query.id;
+    let sql = `SELECT * FROM san_pham WHERE id_of_category = '${idGeted}'`;
+    connection.query(sql,(err, result_of_search_by_category)=>{
+        res.json({result_of_search_by_category});
+    })
+}
 module.exports = {
     loadCategoryAndHome,
     addCategory,
     addProduct,
     viewAllProduct,
-    viewDetailProduct
+    viewDetailProduct,
+    editProduct,
+    searchProduct,
+    viewProductByCategory
 }

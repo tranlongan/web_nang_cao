@@ -1,43 +1,29 @@
-<% result3.map((row3)=>{ %>
-<a class="navbar-brand" href="/viewAllProduct">Quay lại</a>
+<div class="col mb-3">
+    <a href="#!">
+        <!-- Card -->
+        <div class="card">
+            <!--Card image-->
+            <div class="view overlay">
+                <img class="card-img-top" style="height: 369px" src="<%= row1.link_image %>"
+                     alt="Card image cap">
+                <a href="#!">
+                    <div class="mask rgba-white-slight"></div>
+                </a>
+            </div>
 
-<div class="h2-responsive mb-5">Sửa sản phẩm</div>
-
-<div id="message" style="color: green"></div>
-<!--                    form thêm sản phẩm -->
-<!--                        ảnh-->
-<div class="row mb-3">
-    <div class="col-5">
-        <div>
-            Chọn hình ảnh minh họa cho sản phẩm<span style="color: red"> *</span>
+            <!--Card content-->
+            <div class="card-body">
+                <!--Title-->
+                <h4 class="card-title"><%= row1.name_product %></h4>
+                <!--Review-->
+                <i class='fas fa-star blue-text'> </i>
+                <i class='fas fa-star blue-text'> </i>
+                <i class='fas fa-star blue-text'> </i>
+                <i class='fas fa-star blue-text'> </i>
+                <i class='fas fa-star blue-text'> </i>
+                <p><%= row1.cost %> VNĐ</p>
+            </div>
         </div>
-    </div>
-    <div class="col-7">
-        <input type="file" id="myFile" name="myFile">
-    </div>
+        <!-- Card -->
+    </a>
 </div>
-<!--                        tên sp-->
-<div class="row mb-3">
-    <div class="col-5">
-        <div>
-            Tên sản phẩm<span style="color: red"> *</span>
-        </div>
-    </div>
-    <div class="col-7">
-        <input type="text" id="name_product" name="name_product" class="form-control"
-               value="<%= row3.name_product %>" required="required">
-    </div>
-</div>
-<!--                        giá sp-->
-<div class="row mb-3">
-    <div class="col-5">
-        <div>
-            Giá sản phẩm<span style="color: red"> *</span>
-        </div>
-    </div>
-    <div class="col-7">
-        <input type="text" id="cost_product" name="cost_product" class="form-control"
-               value="<%= row3.cost %>" required="required">
-    </div>
-</div>
-<% }) %>

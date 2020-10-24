@@ -25,29 +25,31 @@
 
             <div class="row mb-2">
                 <div class="col-2">
-                    Tìm kiếm theo danh mục
+                    Tìm kiếm sản phẩm
                 </div>
-                <div class="col-5">
-                    <select class="browser-default custom-select">
-                        <% result1.map((row1)=>{ %>
-                            <option><%= row1.name_category %></option>
-                        <% }) %>
-                    </select>
+                <div class="col-7">
+                    <span>
+                        <input id="data_input_search" name="data_input_search" class="form-control" type="text"
+                               onkeypress="return doIt(event)" placeholder="Tìm sản phẩm mong muốn...">
+                    </span>
                 </div>
                 <div class="col-3">
-                    <button class="m-0 p-2 btn btn-amber">Tìm kiếm</button>
+                    <button type="button" onclick="btnSearchProduct()" class="m-0 p-2 btn btn-amber">Tìm kiếm</button>
                 </div>
             </div>
-            <% result2.map((row2)=>{ %>
-                <ul class="nav mb-4">
-                    <li class="nav-item">
-                        <img style="height: 96px; width: 76px" src="<%= row2.link_image %>"
-                             alt="Generic placeholder image">
 
-                    </li>
-                    <li class="nav-item ml-3 mt-4 w-50">
+            <div id="divData">
+                <% result2.map((row2)=>{ %>
+                    <ul class="nav mb-4">
+                        <li class="nav-item">
+                            <img style="height: 96px; width: 76px" src="<%= row2.link_image %>"
+                                 alt="Generic placeholder image">
+
+                        </li>
+                        <li class="nav-item ml-3 mt-1 w-50">
                 <span class="media-body">
                     <h5 class="mt-0 mb-2 font-weight-bold"><%= row2.name_product %></h5>
+                    <h6><%= row2.name_category %></h6>
                     <!--Review-->
                     <i class="fas fa-star blue-text"> </i>
                     <i class="fas fa-star blue-text"> </i>
@@ -55,17 +57,18 @@
                     <i class="fas fa-star blue-text"> </i>
                     <i class="fas fa-star blue-text"> </i>
                 </span>
-                    </li>
-                    <li class="nav-item mt-4 ml-3">
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/viewDetailProduct?id=<%=row2.id%>">Xem</a>
-                            </li>
-                            <li class="nav-item"><a class="nav-link">Xóa</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            <% }) %>
+                        </li>
+                        <li class="nav-item mt-4 ml-3">
+                            <ul class="nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/viewDetailProduct?id=<%= row2.id %>">Xem</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link">Xóa</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                <% }) %>
+            </div>
         </div>
         <!--*********************-->
     </div>
@@ -75,23 +78,108 @@
 <!-- jQuery -->
 <script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
 <!-- Bootstrap tooltips -->
-<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
 <!-- Bootstrap core JavaScript -->
 <script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
 <!--ckeditor-->
 <script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+<!--Tìm kiếm sản phẩm khi enter-->
 <script>
-    const doIt4 = async (id) => {
+    const doIt = async (e)=>{
+        if (e.keyCode === 13) {
+            const data_input_search = document.getElementById("data_input_search").value;
+            try {
+                const result = await axios.post(`/searchProduct`, {data_input_search});
+                console.log(result.data);
+                let html1 = '';
+                result.data.result_search.map((data1) => {
+                    html1 += '<div>\n' +
+                        '<ul class="nav mb-4">\n' +
+                        '    <li class="nav-item">\n' +
+                        '        <img style="height: 96px; width: 76px" src="' + data1.link_image + '"\n' +
+                        '             alt="Generic placeholder image">\n' +
+                        '\n' +
+                        '    </li>\n' +
+                        '    <li class="nav-item ml-3 mt-1 w-50">\n' +
+                        '                <span class="media-body">\n' +
+                        '                    <h5 class="mt-0 mb-2 font-weight-bold">' + data1.name_product + '</h5>\n' +
+                        '                    <h6>' + data1.name_category + '</h6>\n' +
+                        '                    <!--Review-->\n' +
+                        '                    <i class="fas fa-star blue-text"> </i>\n' +
+                        '                    <i class="fas fa-star blue-text"> </i>\n' +
+                        '                    <i class="fas fa-star blue-text"> </i>\n' +
+                        '                    <i class="fas fa-star blue-text"> </i>\n' +
+                        '                    <i class="fas fa-star blue-text"> </i>\n' +
+                        '                </span>\n' +
+                        '    </li>\n' +
+                        '    <li class="nav-item mt-4 ml-3">\n' +
+                        '        <ul class="nav">\n' +
+                        '            <li class="nav-item">\n' +
+                        '                <a class="nav-link" href="/viewDetailProduct?id=' + data1.id + '">Xem</a>\n' +
+                        '            </li>\n' +
+                        '            <li class="nav-item"><a class="nav-link">Xóa</a></li>\n' +
+                        '        </ul>\n' +
+                        '    </li>\n' +
+                        '</ul>\n' +
+                        '</div>';
+                })
+                document.getElementById("divData").innerHTML = html1;
+                console.log(html1);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
+</script>
+
+<!--Tìm kiếm sản phẩm khi nhấn nút-->
+<script>
+    const btnSearchProduct = async () => {
+        const data_input_search = document.getElementById("data_input_search").value;
+
         try {
-            axios.get('/viewAllProduct', {
-                params: {
-                    "id_to_get": id
-                }
+            const result = await axios.post(`/searchProduct`, {data_input_search});
+            console.log(result.data);
+            let html1 = '';
+            result.data.result_search.map((data1) => {
+                html1 += '<div>\n' +
+                    '<ul class="nav mb-4">\n' +
+                    '    <li class="nav-item">\n' +
+                    '        <img style="height: 96px; width: 76px" src="' + data1.link_image + '"\n' +
+                    '             alt="Generic placeholder image">\n' +
+                    '\n' +
+                    '    </li>\n' +
+                    '    <li class="nav-item ml-3 mt-1 w-50">\n' +
+                    '                <span class="media-body">\n' +
+                    '                    <h5 class="mt-0 mb-2 font-weight-bold">' + data1.name_product + '</h5>\n' +
+                    '                    <h6>' + data1.name_category + '</h6>\n' +
+                    '                    <!--Review-->\n' +
+                    '                    <i class="fas fa-star blue-text"> </i>\n' +
+                    '                    <i class="fas fa-star blue-text"> </i>\n' +
+                    '                    <i class="fas fa-star blue-text"> </i>\n' +
+                    '                    <i class="fas fa-star blue-text"> </i>\n' +
+                    '                    <i class="fas fa-star blue-text"> </i>\n' +
+                    '                </span>\n' +
+                    '    </li>\n' +
+                    '    <li class="nav-item mt-4 ml-3">\n' +
+                    '        <ul class="nav">\n' +
+                    '            <li class="nav-item">\n' +
+                    '                <a class="nav-link" href="/viewDetailProduct?id=' + data1.id + '">Xem</a>\n' +
+                    '            </li>\n' +
+                    '            <li class="nav-item"><a class="nav-link">Xóa</a></li>\n' +
+                    '        </ul>\n' +
+                    '    </li>\n' +
+                    '</ul>\n' +
+                    '</div>';
             })
-        }catch (e) {
+            document.getElementById("divData").innerHTML = html1;
+            console.log(html1);
+        } catch (e) {
             console.error(e);
         }
     }

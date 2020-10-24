@@ -22,18 +22,6 @@
     <div class="row">
         <!--        nút home-->
         <a class="navbar-brand" href="/">Trang chủ</a>
-
-        <!--        search-->
-        <div class="input-group w-50">
-            <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm"
-                   aria-label="Example text with button addon"
-                   aria-describedby="button-addon1">
-            <div class="input-group-prepend">
-                <button class="btn btn-md btn-outline-primary m-0 px-3 py-2 z-depth-0 waves-effect" type="button"
-                        id="button-addon1">Tìm kiếm
-                </button>
-            </div>
-        </div>
     </div>
 
     <div id="data_viewAllProduct">
@@ -43,10 +31,10 @@
                 <a class="nav-link active" type="button"><i class="fas fa-align-justify mr-1"></i>Danh mục sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" type="button" onclick="doIt0()">Thêm danh mục</a>
+                <a class="nav-link" type="button" onclick="btnAppendCategory()">Thêm danh mục</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" type="button" onclick="doIt1()">Thêm sản phẩm</a>
+                <a class="nav-link" type="button" onclick="btnAppendProduct()">Thêm sản phẩm</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/viewAllProduct">Xem tổng quan các sản phẩm</a>
@@ -61,7 +49,8 @@
                 <div>
                     <div class="list-group" id="list-tab" role="tablist">
                         <% result.map((row)=>{ %>
-                            <a class="list-group-item list-group-item-action"
+                            <a type="button" onclick="viewAllProductByCategory(<%= row.id %>)"
+                               class="list-group-item list-group-item-action"
                                role="tab" aria-controls="home">
                                 <%= row.name_category %>
                             </a>
@@ -73,93 +62,45 @@
             <!--        Hiển thị các sản phẩm-->
             <div class="col-7">
                 <!-- Card deck -->
-                <div id="display0" class="card-deck">
-
-                    <!-- Card1 -->
-                    <div class="card mb-4">
-
-                        <!--Card image-->
-                        <div class="view overlay">
-                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/16.jpg"
-                                 alt="Card image cap">
+                <div id="display0" class="row row-cols-1 row-cols-md-2">
+                    <% result1.map((row1)=>{ %>
+                        <div class="col mb-3">
                             <a href="#!">
-                                <div class="mask rgba-white-slight"></div>
+                                <!-- Card -->
+                                <div class="card">
+                                    <!--Card image-->
+                                    <div class="view overlay">
+                                        <img class="card-img-top" style="height: 348px" src="<%= row1.link_image %>"
+                                             alt="Card image cap">
+                                        <a href="#!">
+                                            <div class="mask rgba-white-slight"></div>
+                                        </a>
+                                    </div>
+
+                                    <!--Card content-->
+                                    <div class="card-body">
+                                        <!--Title-->
+                                        <h4 class="card-title"><%= row1.name_product %></h4>
+                                        <!--Review-->
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <p><%= row1.cost %> VNĐ</p>
+                                    </div>
+                                </div>
+                                <!-- Card -->
                             </a>
                         </div>
-
-                        <!--Card content-->
-                        <a class="card-body" href="#!">
-                            <!--Title-->
-                            <h4 class="card-title">Card title</h4>
-                            <!--Text-->
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of
-                                the card's
-                                content.</p>
-                        </a>
-
-                    </div>
-                    <!--end Card1 -->
-
-                    <!-- Card2 -->
-                    <div class="card mb-4">
-
-                        <!--Card image-->
-                        <div class="view overlay">
-                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/14.jpg"
-                                 alt="Card image cap">
-                            <a href="#!">
-                                <div class="mask rgba-white-slight"></div>
-                            </a>
-                        </div>
-
-                        <!--Card content-->
-                        <a class="card-body" href="#!">
-                            <!--Title-->
-                            <h4 class="card-title">Card title</h4>
-                            <!--Text-->
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of
-                                the card's
-                                content.</p>
-                        </a>
-
-                    </div>
-                    <!--end Card2 -->
-
-                    <!-- Card3 -->
-                    <div class="card mb-4">
-
-                        <!--Card image-->
-                        <div class="view overlay">
-                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/15.jpg"
-                                 alt="Card image cap">
-                            <a href="#!">
-                                <div class="mask rgba-white-slight"></div>
-                            </a>
-                        </div>
-
-                        <!--Card content-->
-                        <a class="card-body" href="#!">
-
-                            <!--Title-->
-                            <h4 class="card-title">Card title</h4>
-                            <!--Text-->
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of
-                                the card's
-                                content.</p>
-                        </a>
-                    </div>
-                    <!--end Card3 -->
-
+                    <% }) %>
                 </div>
 
                 <!--            phần thêm sản phẩm bị hide-->
                 <div id="display1" style="display: none">
                     <div class="h2-responsive mb-5">Thêm sản phẩm</div>
 
-                    <div id="message" style="color: green"></div>
+                    <div id="message"></div>
                     <!--                    form thêm sản phẩm -->
                     <!--                        ảnh-->
                     <div class="row mb-3">
@@ -223,17 +164,19 @@
                         </div>
                     </div>
 
-                    <button type="button" onclick="doIt3()" class="btn btn-outline-brown">Thêm sản phẩm</button>
+                    <button type="button" onclick="btnAddProduct()" class="btn btn-outline-brown">Thêm sản phẩm</button>
                 </div>
 
                 <!--            phần danh mục bị hide-->
                 <div id="display2" style="display: none">
                     <div class="h2-responsive">Thêm danh mục</div>
                     <div class="md-form">
-                        <i class="fas fa-pen prefix"></i>
-                        <input type="text" id="inputNameCategory" name="name_category" class="form-control">
-                        <label for="inputNameCategory">Tên danh mục</label>
-                        <button type="submit" class="btn btn-outline-elegant">Thêm danh mục</button>
+                        <form action="/addCategory" method="post">
+                            <i class="fas fa-pen prefix"></i>
+                            <input type="text" id="inputNameCategory" name="name_category" class="form-control">
+                            <label for="inputNameCategory">Tên danh mục</label>
+                            <button type="submit" class="btn btn-outline-elegant">Thêm danh mục</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -252,7 +195,7 @@
 <!-- jQuery -->
 <script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
 <!-- Bootstrap tooltips -->
-<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
 <!-- Bootstrap core JavaScript -->
 <script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
 <!-- MDB core JavaScript -->
@@ -263,7 +206,7 @@
 
 <!--nút append phần thêm danh mục-->
 <script>
-    const doIt0 = async () => {
+    const btnAppendCategory = async () => {
         const displayBlock0 = document.getElementById("display0");
         const displayBlock1 = document.getElementById("display1");
         const displayBlock2 = document.getElementById("display2");
@@ -285,7 +228,7 @@
 
 <!--nút append phần thêm sản phẩm-->
 <script>
-    const doIt1 = async () => {
+    const btnAppendProduct = async () => {
         const displayBlock0 = document.getElementById("display0");
         const displayBlock1 = document.getElementById("display1");
         const displayBlock2 = document.getElementById("display2");
@@ -301,6 +244,50 @@
         } else {
             displayBlock0.style.display = "none";
             displayBlock2.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+    const viewAllProductByCategory = async (id) => {
+        try {
+            const result = await axios.get(`/viewProductByCategory?id=${id}`);
+            console.log(result.data.result_of_search_by_category);
+            let html = '';
+            result.data.result_of_search_by_category.forEach((data) => {
+                html += '<div class="col mb-3">\n' +
+                    '    <a href="#!">\n' +
+                    '        <!-- Card -->\n' +
+                    '        <div class="card">\n' +
+                    '            <!--Card image-->\n' +
+                    '            <div class="view overlay">\n' +
+                    '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                    '                     alt="Card image cap">\n' +
+                    '                <a href="#!">\n' +
+                    '                    <div class="mask rgba-white-slight"></div>\n' +
+                    '                </a>\n' +
+                    '            </div>\n' +
+                    '\n' +
+                    '            <!--Card content-->\n' +
+                    '            <div class="card-body">\n' +
+                    '                <!--Title-->\n' +
+                    '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                    '                <!--Review-->\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <p>' + data.cost + ' VNĐ</p>\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <!-- Card -->\n' +
+                    '    </a>\n' +
+                    '</div>\n';
+            })
+            document.getElementById("display0").innerHTML = html;
+        } catch (e) {
+            console.error(e);
         }
     }
 </script>
@@ -327,8 +314,8 @@
     }
     initEditor();
 
-    const doIt3 = async () => {
-        let description = editor.data;
+    const btnAddProduct = async () => {
+        let description = editor.getData();
         let name_product = document.getElementById("name_product").value;
         let cost_product = document.getElementById("cost_product").value;
         let id_of_category = document.getElementById("select_category").value;
