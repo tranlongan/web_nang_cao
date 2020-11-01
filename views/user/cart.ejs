@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phần cho user</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+
+<!-- Bắt đầu code-->
+<div class="container-fluid pb-2" style="background-color: gainsboro">
+    <!--    row 1-->
+    <div>
+        <a class="navbar-brand" href="/homeUser?id_user=<%= id_geted %>">Trang chủ</a>
+        <!--        nút home-->
+        <div class="float-right">
+            <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user%></span></div>
+            <a class="navbar-brand" href="/">Đăng xuất</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-9">
+            <% result_user_cart.map((row)=>{ %>
+                <div class="row mb-1 ml-3 mr-3" style="background-color: white">
+                    <div class="col-1">
+                        <img style="width: 127px" src="<%= row.link_image %>">
+                    </div>
+                    <div class="col-5 ml-5 mt-2 pt-3">
+                        <div>
+                            <%= row.name_product %>
+                        </div>
+                        <div>
+                            <a href="/deleteProductFromCart?id_user=<%= id_geted %>&id_product=<%= row.id_of_product%>">Để khi khác mua</a>
+                        </div>
+                    </div>
+                    <div class="col-2 mt-4">
+                        <div id="cost_format">
+                            <%= Intl.NumberFormat().format(row.cost) %> đ
+                        </div>
+                    </div>
+                    <div class="col-2 mt-4">
+                        <div>
+                            <button class="btn pl-3 pr-3 pt-1 pb-1">-</button>
+                            <input type="text" id="numbers" name="numbers" value="<%= row.numbers %>"
+                                   style="width: 30px; height: 26px; text-align: center">
+                            <button class="btn pl-3 pr-3 pt-1 pb-1">+</button>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+        <div class="col-3 mb-1 p-5" style="background-color: white;">
+            <div>
+                Thành tiền:
+                <span class="float-right" style="color: red;font-weight: bolder"> đ</span>
+                <span class="float-right" id="sumCost" style="color: red; font-size: 20px; font-weight: bolder"></span>
+            </div>
+            <div>
+                <button style="max-width: inherit; width: 100%" class="btn btn-danger">Tiến hành đặt hàng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Kết thúc code-->
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    (async () => {
+        try {
+            const result = await axios.get(`/sumCost?id_user=${<%= id_geted %>}`);
+            const body = result.data.result_sum_cost;
+            console.log(body);
+            let sum = 0, sumCost = 0;
+            for (let i = 0; i < body.length; i++) {
+                let cost = parseFloat(body[i].cost);
+                let numbers = parseInt(body[i].numbers);
+                sum = cost * numbers;
+                sumCost += sum;
+                console.log(cost, numbers, 'Sum = ', sum);
+                console.log('Sum all cost = ', sumCost);
+            }
+            document.getElementById("sumCost").innerHTML = new Intl.NumberFormat().format(sumCost);
+        } catch (e) {
+            console.error(e);
+        }
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phần cho user</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+<!--    row 1-->
+<div>
+    <!--        nút home-->
+    <a class="navbar-brand" href="/homeUser?id_user=<%= id_user0 %>">Trang chủ</a>
+    <div class="float-right">
+        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user%></span></div>
+        <a class="navbar-brand" href="/">Đăng xuất</a>
+    </div>
+</div>
+<!-- Bắt đầu code-->
+<div class="container-fluid">
+    <div id="data_viewAllProduct">
+        <!--        nav list-->
+        <ul class="nav grey lighten-4 py-4">
+            <li class="nav-item">
+                <a class="nav-link active" type="button">
+                    <i class="fas fa-align-justify mr-1"></i><b>Danh mục sản phẩm</b>
+                </a>
+            </li>
+            <li class="nav-item mr-5">
+                <a style="color: #444444" href="/user/pageCart?id_user=<%= id_user0 %>">
+                    <i class="fas fa-shopping-cart fa-2x"></i><font style="font-size: 19px; font-weight: bolder">Giỏ
+                        hàng</font>
+                </a>
+            </li>
+            <li>
+                <!-- Default input -->
+                <input style="width: 350px" type="text" id="data_input_search" class="form-control"
+                       onkeypress="searchProductEnter(event)" placeholder="Tìm kiếm sản phẩm, danh mục,....">
+            </li>
+        </ul>
+
+        <!--    row 2-->
+        <div class="row">
+            <!--        phần danh mục-->
+            <div class="col-5">
+                <div>
+                    <div class="list-group" id="list-tab" role="tablist">
+                        <% result.map((row)=>{ %>
+                            <a type="button" onclick="viewAllProductByCategory(<%= row.id %>)"
+                               class="list-group-item list-group-item-action"
+                               role="tab" aria-controls="home">
+                                <%= row.name_category %>
+                            </a>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!--        Hiển thị các sản phẩm-->
+            <div class="col-7">
+                <!-- Card deck -->
+                <div id="divData" class="row row-cols-1 row-cols-md-2">
+                    <% result1.map((row1)=>{ %>
+                        <div class="col mb-3">
+                            <!-- Card -->
+                            <a href="/user/detailProduct_User?id=<%= row1.id %>">
+                                <div class="card">
+                                    <!--Card image-->
+                                    <div class="view overlay">
+                                        <img class="card-img-top" style="height: 348px" src="<%= row1.link_image %>"
+                                             alt="Card image cap">
+                                        <a href="/user/detailProduct_User?id_user=<%= id_user0%>&id_product=<%= row1.id %>">
+                                            <div class="mask rgba-white-slight"></div>
+                                        </a>
+                                    </div>
+
+                                    <!--Card content-->
+                                    <div class="card-body">
+                                        <!--Title-->
+                                        <h5 class="card-title"
+                                            style="font-weight: lighter"><%= row1.name_product %></h5>
+                                        <p style="color: #333333; font-weight: bolder"><%= Intl.NumberFormat().format(row1.cost) %> VNĐ</p>
+                                        <!--Review-->
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                        <i class='fas fa-star blue-text'> </i>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Card -->
+                        </div>
+                    <% }) %>
+                </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pg-blue">
+                        <li class="page-item ">
+                            <a class="page-link" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link">1 <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link">2 </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link">3</a>
+                        </li>
+                        <li class="page-item ">
+                            <a class="page-link">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Kết thúc code-->
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!--hiệu ứng phân trang-->
+<script>
+    $('li').click(function () {
+        $(this).addClass('active').siblings().removeClass('active');
+    });
+</script>
+
+<!--Tìm kiếm sản phẩm khi enter-->
+<script>
+    const searchProductEnter = async (e) => {
+        if (e.keyCode === 13) {
+            const data_input_search = document.getElementById("data_input_search").value;
+            try {
+                const result = await axios.post(`/searchProduct`, {data_input_search});
+                console.log(result.data);
+                let html = '';
+                result.data.result_search.map((data) => {
+                    html += '<div class="col mb-3">\n' +
+                        '    <a href="/user/detailProduct_User?id=' + data.id + '">\n' +
+                        '        <!-- Card -->\n' +
+                        '        <div class="card">\n' +
+                        '            <!--Card image-->\n' +
+                        '            <div class="view overlay">\n' +
+                        '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                        '                     alt="Card image cap">\n' +
+                        '                <a href="/user/detailProduct_User?id=' + data.id + '">\n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a>\n' +
+                        '            </div>\n' +
+                        '\n' +
+                        '            <!--Card content-->\n' +
+                        '            <div class="card-body">\n' +
+                        '                <!--Title-->\n' +
+                        '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                        '                <!--Review-->\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <p>' + data.cost + ' VNĐ</p>\n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '        <!-- Card -->\n' +
+                        '    </a>\n' +
+                        '</div>\n';
+                })
+                document.getElementById("divData").innerHTML = html;
+                console.log(html1);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

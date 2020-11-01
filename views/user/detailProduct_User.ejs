@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web bán hàng</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+
+<div>
+    <!--        nút home-->
+    <a class="navbar-brand" href="/homeUser?id_user=<%= id_geted0 %>">Trang chủ</a>
+    <div class="float-right">
+        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user%></span></div>
+        <a class="navbar-brand" href="/">Đăng xuất</a>
+    </div>
+</div>
+
+<!-- Bắt đầu code-->
+<div style="background-color: gainsboro">
+    <% result.map((row) => { %>
+        <div class="container" style="background-color: white">
+            <div class="row">
+                <div class="col-4">
+                    <img style="width: 356px; height: 280px" alt="Card image cap" src="<%= row.link_image %>">
+                </div>
+                <div class="col-8" style="border-left: 1px solid #aaaaaa">
+                    <div style="font-size: 21px"><%= row.name_product %></div>
+
+                    <div class="row">
+                        <div class="col-7 m-1">
+                            <div style="background-color: #f0f0f0; font-size: 24px"><%= Intl.NumberFormat().format(row.cost) %> đ</div>
+                            <hr/>
+                            <div> Giao đến
+                                <u style="font-weight: bolder; font-size: 15px">
+                                    Q.Ngũ Hành Sơn, P.Hòa Quý, Đà Nẵng
+                                </u> - <a href="#!">ĐỔI ĐỊA CHỈ</a>
+                            </div>
+                            <div style="border: 1px solid #aaaaaa; border-radius: 10px">
+                                <div class="ml-1" style="font-weight: bolder">GIAO TIÊU CHUẨN</div>
+                                <div class="ml-3" style="font-weight: bolder; color: green">tháng 11 năm 2020</div>
+                                <div class="ml-3">Vận chuyển: <font style="font-weight: bolder; color: green">Miễn
+                                        phí </font><strike>44.000đ</strike></div>
+                            </div>
+                            <hr/>
+                            <div>Số lượng</div>
+                            <div>
+                                <button style="font-weight: bolder; font-size: 16px" class="btn">-</button>
+                                <input type="text" id="numbers" name="numbers" value="1"
+                                       style="width: 40px; text-align: center">
+                                <button style="font-weight: bolder; font-size: 16px" class="btn">+</button>
+                            </div>
+                            <div>
+                                <button onclick="buy(<%= id_geted0 %>,<%= row.id %>)" type="button"
+                                        class="btn btn-danger"
+                                        style="font-size: 16px">Chọn mua
+                                </button>
+                                <button class="btn btn-outline-blue">
+                                    <div style="font-size: 11px">Trả góp qua thẻ tín dụng</div>
+                                    <div style="font-size: 8px">Chỉ từ 1.000.000 đ/tháng</div>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="border: 1px solid #aaaaaa; max-height: inherit; height: 50%" class="col-4 m-1">
+                            <div>Cam kết chính hiệu bởi</div>
+                            <div class="row pb-2" style="border-bottom: 1px solid #aaaaaa">
+                                <div class="col-3">
+                                    <img style="width: 50px; height: 50px; border-radius: 100%"
+                                         src="/images/98f3f134f85cff2c6972c31777629aa0.png">
+                                </div>
+                                <div class="col-9">
+                                    <div>Tiki Trading</div>
+                                    <a href="#!">Xem shop</a>
+                                </div>
+                            </div>
+                            <nav class="mt-2 nav" style="text-align: center">
+                                <li class="nav-item mr-2" style="font-size: 12px">
+                                    <img style="width: 20px"
+                                         src="https://frontend.tikicdn.com/_desktop-next/static/img/icons/compensation.svg">
+                                    <div>Hoàn tiền</div>
+                                    <div><b>111%</b></div>
+                                    <div><u>nếu giả</u></div>
+                                </li>
+                                <li class="nav-item mr-2" style="font-size: 12px">
+                                    <img src="https://frontend.tikicdn.com/_desktop-next/static/img/pdp_revamp_v2/guarantee.svg">
+                                    <div>Mở hộp kiểm tra</div>
+                                    <div>kiểm tra</div>
+                                    <div>nhận hàng</div>
+                                </li>
+                                <li class="nav-item" style="font-size: 12px">
+                                    <img style="width: 20px"
+                                         src="https://frontend.tikicdn.com/_desktop-next/static/img/icons/refund.svg">
+                                    <div>Đổi trả trong</div>
+                                    <div><b>20 ngày</b></div>
+                                    <div>nếu sp lỗi</div>
+                                </li>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div><%- row.description %></div>
+        </div>
+    <% }) %>
+    <div class="container">
+        <h3>Khách hàng nhận xét</h3>
+    </div>
+    <% result_comment.map((row1)=>{ %>
+        <div class="container" style="background-color: white">
+            <div class="row">
+                <div class="col-1">
+                    <img style="border-radius:100%; width: 80px" src="/images/unnamed.png">
+                </div>
+                <div class="col-5">
+                    <div style="font-weight: bolder" class="mt-3">
+                        <%= row1.name_user%>
+                    </div>
+                    <div style="color: #aaaaaa">
+                        Nhận xét vào <%= row1.time_comment%>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <i class='fas fa-star yellow-text'> </i>
+                <i class='fas fa-star yellow-text'> </i>
+                <i class='fas fa-star yellow-text'> </i>
+                <i class='fas fa-star yellow-text'> </i>
+                <i class='fas fa-star yellow-text'> </i>
+            </div>
+            <div style="font-weight: bolder"><%= row1.comment_content %></div>
+        </div>
+    <% }) %>
+    <div class="container mt-2 mb-4">
+        <div class="row">
+            <input style="max-width: inherit; width: 85%" type="text" id="data_input_answer" name="data_input_answer"
+                   class="pl-3" placeholder="Hãy đặt câu hỏi liên quan đến sản phẩm...">
+            <span>
+                <% result.map((row2)=>{ %>
+                    <button type="button" onclick="submitComment(<%= id_geted0 %>,<%= row2.id %>)" class="btn btn-amber pt-2 pb-2">Gửi nhận xét</button>
+                <% }) %>
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Kết thúc code-->
+
+<script>
+
+</script>
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!--nút thêm sản phẩm vào giỏ hảng-->
+<script>
+    const buy = async (id_user, id_product) => {
+        let numbers = document.getElementById("numbers").value;
+        const formData = new FormData();
+        formData.append("numbers", numbers);
+        try {
+            const result = await axios.post(`/addCart?id_user=${id_user}&id_product=${id_product}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(result);
+            const body = result.data;
+            const id_get = body.rl;
+            if (body.msg === 'ok') {
+                alert('Thêm vào giỏ hàng thành công');
+                window.open(`/user/pageCart?id_user=${id_get}`, `_self`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<!--nút bình luận-->
+<script>
+    const submitComment = async (id_user, id_product) => {
+        const data_input_answer = document.getElementById("data_input_answer").value;
+        const formData = new FormData();
+        formData.append("data_input_answer", data_input_answer);
+        try {
+            const result = await axios.post(`/addComment?id_user=${id_user}&id_product=${id_product}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            const body = result.data;
+            if(body.msg === 'ok'){
+                window.open(`/user/detailProduct_User?id_user=${id_user}&id_product=${id_product}`,`_self`);
+                // alert('1111111');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+</body>
+</html>
