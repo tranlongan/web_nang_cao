@@ -19,6 +19,9 @@ router.post('/loginAccountUser', controller.loginAccountUser);
 // xem chi tiết sản phẩm để đặt hàng - của bên user
 router.get('/user/detailProduct_User', controller.detailProduct_User);
 
+// tìm kiếm sản phẩm - của bên admin
+router.post('/searchProduct', controller.searchProduct);
+
 //thêm vào giỏ hàng
 router.post('/addCart', controller.addCart);
 
@@ -31,8 +34,23 @@ router.get('/user/pageCart', controller.pageCart);
 //Tính tổng số tiền trong giỏ hàng
 router.get('/sumCost', controller.sumCost);
 
+// thanh toán
+router.get('/user/toPay',controller.toPay);
+
+// trang thanh toán
+router.get('/user/pay', controller.pay);
+
 // bình luận trong bài viết chi tiết
 router.post('/addComment', controller.addComment);
+
+//phân trang
+router.post('/pagination', controller.pagination);
+
+// tìm kiếm sản phẩm theo danh mục
+router.get('/viewProductByCategory_user', controller.viewProductByCategory_user);
+
+// append div
+router.get('/appendDiv', controller.appendDiv);
 // ****************************************************************************
 // load home của admin
 router.get('/admin/loadCategoryAndHome', controller.loadCategoryAndHome);
@@ -48,14 +66,14 @@ router.get('/admin/viewAllProduct', controller.viewAllProduct);
 
 // xem chi tiết để chỉnh sửa sản phẩm - của bên admin
 router.get('/admin/viewDetailProduct', controller.viewDetailProduct);
+
 // giống với phương thức trên
 router.post('/editProduct', controller.editProduct);
 
-// tìm kiếm sản phẩm - của bên admin
-router.post('/searchProduct', controller.searchProduct);
-
-// tìm kiếm sản phẩm theo danh mục - của bên admin
+// tìm kiếm sản phẩm theo danh mục
 router.get('/viewProductByCategory', controller.viewProductByCategory);
 
+// xóa sản phẩm
+router.get('/deleteProduct', controller.deleteProduct);
 
 module.exports = router;

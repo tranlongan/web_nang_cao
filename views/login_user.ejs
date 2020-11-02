@@ -169,6 +169,7 @@
         let html = '';
         const body = result.data;
         const id_geted = body.rl[0].id;
+        // const page_1 = 1;
         if(body.msg === 'login success'){
             window.open(`/homeUser?id_user=${id_geted}`, `_self`);
         }

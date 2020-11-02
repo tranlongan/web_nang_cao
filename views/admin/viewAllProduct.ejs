@@ -63,7 +63,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/admin/viewDetailProduct?id=<%= row2.id %>">Xem</a>
                                 </li>
-                                <li class="nav-item"><a class="nav-link">Xóa</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/deleteProduct?id=<%= row2.id %>">Xóa</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -90,7 +92,7 @@
 
 <!--Tìm kiếm sản phẩm khi enter-->
 <script>
-    const doIt = async (e)=>{
+    const doIt = async (e) => {
         if (e.keyCode === 13) {
             const data_input_search = document.getElementById("data_input_search").value;
             try {
@@ -122,7 +124,9 @@
                         '            <li class="nav-item">\n' +
                         '                <a class="nav-link" href="/viewDetailProduct?id=' + data1.id + '">Xem</a>\n' +
                         '            </li>\n' +
-                        '            <li class="nav-item"><a class="nav-link">Xóa</a></li>\n' +
+                        '            <li class="nav-item">' +
+                        '               <a class="nav-link" href="/deleteProduct?id='+data1.id+'">Xóa</a>' +
+                        '           </li>\n' +
                         '        </ul>\n' +
                         '    </li>\n' +
                         '</ul>\n' +
@@ -171,7 +175,7 @@
                     '            <li class="nav-item">\n' +
                     '                <a class="nav-link" href="/viewDetailProduct?id=' + data1.id + '">Xem</a>\n' +
                     '            </li>\n' +
-                    '            <li class="nav-item"><a class="nav-link">Xóa</a></li>\n' +
+                    '            <li class="nav-item"><a href="/deleteProduct?id='+data1.id+'" class="nav-link">Xóa</a></li>\n' +
                     '        </ul>\n' +
                     '    </li>\n' +
                     '</ul>\n' +

@@ -21,7 +21,8 @@
     <!--        nút home-->
     <a class="navbar-brand" href="/homeUser?id_user=<%= id_geted0 %>">Trang chủ</a>
     <div class="float-right">
-        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user%></span></div>
+        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user %></span>
+        </div>
         <a class="navbar-brand" href="/">Đăng xuất</a>
     </div>
 </div>
@@ -39,7 +40,9 @@
 
                     <div class="row">
                         <div class="col-7 m-1">
-                            <div style="background-color: #f0f0f0; font-size: 24px"><%= Intl.NumberFormat().format(row.cost) %> đ</div>
+                            <div style="background-color: #f0f0f0; font-size: 24px"><%= Intl.NumberFormat().format(row.cost) %>
+                                đ
+                            </div>
                             <hr/>
                             <div> Giao đến
                                 <u style="font-weight: bolder; font-size: 15px">
@@ -118,17 +121,17 @@
         <h3>Khách hàng nhận xét</h3>
     </div>
     <% result_comment.map((row1)=>{ %>
-        <div class="container" style="background-color: white">
+        <div class="container mb-1" style="background-color: white; border-bottom: 1px solid #aaaaaa">
             <div class="row">
                 <div class="col-1">
                     <img style="border-radius:100%; width: 80px" src="/images/unnamed.png">
                 </div>
                 <div class="col-5">
                     <div style="font-weight: bolder" class="mt-3">
-                        <%= row1.name_user%>
+                        <%= row1.name_user %>
                     </div>
                     <div style="color: #aaaaaa">
-                        Nhận xét vào <%= row1.time_comment%>
+                        Nhận xét vào <%= row1.time_comment %>
                     </div>
                 </div>
             </div>
@@ -140,15 +143,27 @@
                 <i class='fas fa-star yellow-text'> </i>
             </div>
             <div style="font-weight: bolder"><%= row1.comment_content %></div>
+            <div>
+                <button type="button" class="btn" onclick="btnReply(<%= result_id_comment[0].id %>)">Trả lời</button>
+            </div>
+            <textarea id="divTextArea" class="mr-5 ml-3" style="display: none;max-width: inherit; width: 96%; height: inherit"></textarea>
+            <blockquote class="blockquote">
+                <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a
+                    ante.</p>
+                <footer class="blockquote-footer mb-3">Someone famous in <cite title="Source Title">Source Title</cite>
+                </footer>
+            </blockquote>
         </div>
     <% }) %>
+
     <div class="container mt-2 mb-4">
         <div class="row">
             <input style="max-width: inherit; width: 85%" type="text" id="data_input_answer" name="data_input_answer"
                    class="pl-3" placeholder="Hãy đặt câu hỏi liên quan đến sản phẩm...">
             <span>
                 <% result.map((row2)=>{ %>
-                    <button type="button" onclick="submitComment(<%= id_geted0 %>,<%= row2.id %>)" class="btn btn-amber pt-2 pb-2">Gửi nhận xét</button>
+                    <button type="button" onclick="submitComment(<%= id_geted0 %>,<%= row2.id %>)"
+                            class="btn btn-amber pt-2 pb-2">Gửi nhận xét</button>
                 <% }) %>
             </span>
         </div>
@@ -212,11 +227,22 @@
                 }
             });
             const body = result.data;
-            if(body.msg === 'ok'){
-                window.open(`/user/detailProduct_User?id_user=${id_user}&id_product=${id_product}`,`_self`);
+            if (body.msg === 'ok') {
+                window.open(`/user/detailProduct_User?id_user=${id_user}&id_product=${id_product}`, `_self`);
                 // alert('1111111');
             }
         } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<!--rep bình luận-->
+<script>
+    const btnReply = async (id_of_comment) => {
+        try {
+            const result = await axios.get(`/appendDiv?id_comment=${id_of_comment}`);
+        }catch (e) {
             console.error(e);
         }
     }

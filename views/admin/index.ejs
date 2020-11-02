@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Web bán hàng</title>
+    <title>Admin</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <!-- Google Fonts Roboto -->
@@ -48,7 +48,7 @@
         <div class="row">
 
             <!--        phần danh mục-->
-            <div class="col-5">
+            <div class="col-3">
                 <div>
                     <div class="list-group" id="list-tab" role="tablist">
                         <% result.map((row)=>{ %>
@@ -63,11 +63,11 @@
             </div>
 
             <!--        Hiển thị các sản phẩm-->
-            <div class="col-7">
+            <div class="col-9">
                 <!-- Card deck -->
-                <div id="display0" class="row row-cols-1 row-cols-md-2">
-                    <% result1.map((row1)=>{ %>
-                        <div class="col mb-3">
+                <div id="display0" class="row row-cols-2 row-cols-md-3">
+                    <% result_limit.map((row1)=>{ %>
+                        <div id="divData" class="col mb-3">
                             <a href="#!">
                                 <!-- Card -->
                                 <div class="card">
@@ -90,7 +90,7 @@
                                         <i class='fas fa-star blue-text'> </i>
                                         <i class='fas fa-star blue-text'> </i>
                                         <i class='fas fa-star blue-text'> </i>
-                                        <p><%= row1.cost %> VNĐ</p>
+                                        <p><%= Intl.NumberFormat().format(row1.cost) %> VNĐ</p>
                                     </div>
                                 </div>
                                 <!-- Card -->
@@ -98,6 +98,26 @@
                         </div>
                     <% }) %>
                 </div>
+
+                <nav class="float-right" aria-label="Page navigation example">
+                    <ul class="pagination pg-blue">
+                        <li class="page-item ">
+                            <button class="page-link" tabindex="-1">Previous</button>
+                        </li>
+                        <% pages.map((row3)=>{ %>
+                            <li class="page-item">
+                                <button type="button" onclick="btnPage(this)" class="page-link"
+                                        value="<%= row3.page %>"
+                                        id="btnPage">
+                                    <%= row3.page %><span class="sr-only">(current)</span>
+                                </button>
+                            </li>
+                        <% }) %>
+                        <li class="page-item ">
+                            <button class="page-link">Next</button>
+                        </li>
+                    </ul>
+                </nav>
 
                 <!--            phần thêm sản phẩm bị hide-->
                 <div id="display1" style="display: none">
@@ -217,6 +237,12 @@
 <!--axios-->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+<!--hiệu ứng phân trang-->
+<script>
+    $('li').click(function () {
+        $(this).addClass('active').siblings().removeClass('active');
+    });
+</script>
 
 <!--nút append phần thêm danh mục-->
 <script>
@@ -322,8 +348,8 @@
         editor = await ClassicEditor
             .create(document.getElementById("ckeditor"), {
                 cloudServices: {
-                    uploadUrl: "https://75171.cke-cs.com/easyimage/upload/",
-                    tokenUrl: "https://75171.cke-cs.com/token/dev/a8c66df7e644b064314258f9274a73a02d361d2236ee2da40da2f66bf333"
+                    uploadUrl: "https://75922.cke-cs.com/easyimage/upload/",
+                    tokenUrl: "https://75922.cke-cs.com/token/dev/1c8883ce4decb5dde5b864f51be5a698dcb2f6d50e89998e6f3981551ebc"
                 }
             });
         editor = await DecoupledEditor
@@ -379,6 +405,57 @@
             // }
         } catch (e) {
             console.error(e)
+        }
+    }
+</script>
+
+<!--phân trang-->
+<script>
+    const btnPage = async (valueBtnPage) => {
+        try {
+            const result = await axios.post(`/pagination?page=${valueBtnPage.value}`);
+            const body = result.data;
+            console.log(body)
+            let html = '';
+            if (body.msg === 'reset page 1') {
+                window.open(`/admin/loadCategoryAndHome?page=${valueBtnPage.value}`, `_self`);
+            } else {
+                body.sanpham.forEach((data) => {
+                    html += '<div class="col mb-3"> \n' +
+                        '    <!-- Card --> \n' +
+                        '    <a> \n' +
+                        '        <div class="card"> \n' +
+                        '            <!--Card image--> \n' +
+                        '            <div class="view overlay"> \n' +
+                        '                <img class="card-img-top" style="height: 348px" src=" ' + data.link_image + '" \n' +
+                        '                     alt="Card image cap"> \n' +
+                        '                <a> \n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a> \n' +
+                        '            </div>\n' +
+                        '            <!--Card content--> \n' +
+                        '            <div class="card-body"> \n' +
+                        '                <!--Title--> \n' +
+                        '                <h5 class="card-title" \n' +
+                        '                    style="font-weight: lighter"> ' + data.name_product + ' </h5> \n' +
+                        '                <p style="color: #333333; font-weight: bolder"> ' + Intl.NumberFormat().format(data.cost) + '\n' +
+                        '                    VNĐ</p> \n' +
+                        '                <!--Review--> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '    </a> \n' +
+                        '    <!-- Card --> \n' +
+                        '</div>';
+                });
+                document.getElementById("display0").innerHTML = html;
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 </script>

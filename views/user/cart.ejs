@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Phần cho user</title>
+    <title>Phần cho user - Giỏ hàng</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <!-- Google Fonts Roboto -->
@@ -24,7 +24,8 @@
         <a class="navbar-brand" href="/homeUser?id_user=<%= id_geted %>">Trang chủ</a>
         <!--        nút home-->
         <div class="float-right">
-            <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user%></span></div>
+            <div class="navbar-brand">Xin chào <span
+                        style="font-weight: bolder"><%= result_account[0].name_user %></span></div>
             <a class="navbar-brand" href="/">Đăng xuất</a>
         </div>
     </div>
@@ -40,7 +41,8 @@
                             <%= row.name_product %>
                         </div>
                         <div>
-                            <a href="/deleteProductFromCart?id_user=<%= id_geted %>&id_product=<%= row.id_of_product%>">Để khi khác mua</a>
+                            <a href="/deleteProductFromCart?id_user=<%= id_geted %>&id_product=<%= row.id_of_product %>">Để
+                                khi khác mua</a>
                         </div>
                     </div>
                     <div class="col-2 mt-4">
@@ -66,7 +68,10 @@
                 <span class="float-right" id="sumCost" style="color: red; font-size: 20px; font-weight: bolder"></span>
             </div>
             <div>
-                <button style="max-width: inherit; width: 100%" class="btn btn-danger">Tiến hành đặt hàng</button>
+                <button id="clickTotal" style="max-width: inherit; width: 100%"
+                   class="btn btn-danger">
+                    Tiến hành đặt hàng
+                </button>
             </div>
         </div>
     </div>
@@ -88,6 +93,7 @@
 
 <script>
     (async () => {
+        const value_sumCost = document.getElementById("sumCost");
         try {
             const result = await axios.get(`/sumCost?id_user=${<%= id_geted %>}`);
             const body = result.data.result_sum_cost;
@@ -101,12 +107,23 @@
                 console.log(cost, numbers, 'Sum = ', sum);
                 console.log('Sum all cost = ', sumCost);
             }
-            document.getElementById("sumCost").innerHTML = new Intl.NumberFormat().format(sumCost);
+            value_sumCost.innerHTML = new Intl.NumberFormat().format(sumCost);
+            totalFn(sumCost);
         } catch (e) {
             console.error(e);
         }
     })();
+
+
 </script>
 
+<script>
+    const totalFn = async (sumCost) => {
+        document.getElementById("clickTotal").addEventListener("click", do_ => {
+            const result1 = axios.get(`/user/toPay?id_user=${<%= id_geted %>}&total_money=${sumCost}`);
+            window.open(`/user/pay?id_user=${<%= id_geted %>}`,`_self`);
+        });
+    }
+</script>
 </body>
 </html>

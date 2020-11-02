@@ -21,7 +21,8 @@
     <!--        nút home-->
     <a class="navbar-brand" href="/homeUser?id_user=<%= id_user0 %>">Trang chủ</a>
     <div class="float-right">
-        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user%></span></div>
+        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user %></span>
+        </div>
         <a class="navbar-brand" href="/">Đăng xuất</a>
     </div>
 </div>
@@ -35,13 +36,18 @@
                     <i class="fas fa-align-justify mr-1"></i><b>Danh mục sản phẩm</b>
                 </a>
             </li>
-            <li class="nav-item mr-5">
+            <li class="nav-item mr-4">
                 <a style="color: #444444" href="/user/pageCart?id_user=<%= id_user0 %>">
-                    <i class="fas fa-shopping-cart fa-2x"></i><font style="font-size: 19px; font-weight: bolder">Giỏ
-                        hàng</font>
+                    <i class="fas fa-shopping-cart fa-2x"></i>
+                    <font style="font-size: 19px; font-weight: bolder">Giỏ hàng</font>
                 </a>
             </li>
-            <li>
+            <li class="nav-item mr-5 mt-2">
+                <a style="color: #444444" href="/user/pay?id_user=<%= id_user0 %>">
+                    <font style="font-size: 19px">Thanh toán</font>
+                </a>
+            </li>
+            <li class="nav-item">
                 <!-- Default input -->
                 <input style="width: 350px" type="text" id="data_input_search" class="form-control"
                        onkeypress="searchProductEnter(event)" placeholder="Tìm kiếm sản phẩm, danh mục,....">
@@ -51,7 +57,7 @@
         <!--    row 2-->
         <div class="row">
             <!--        phần danh mục-->
-            <div class="col-5">
+            <div class="col-3">
                 <div>
                     <div class="list-group" id="list-tab" role="tablist">
                         <% result.map((row)=>{ %>
@@ -66,9 +72,9 @@
             </div>
 
             <!--        Hiển thị các sản phẩm-->
-            <div class="col-7">
+            <div class="col-9">
                 <!-- Card deck -->
-                <div id="divData" class="row row-cols-1 row-cols-md-2">
+                <div id="divData" class="row row-cols-2 row-cols-md-3">
                     <% result1.map((row1)=>{ %>
                         <div class="col mb-3">
                             <!-- Card -->
@@ -78,7 +84,7 @@
                                     <div class="view overlay">
                                         <img class="card-img-top" style="height: 348px" src="<%= row1.link_image %>"
                                              alt="Card image cap">
-                                        <a href="/user/detailProduct_User?id_user=<%= id_user0%>&id_product=<%= row1.id %>">
+                                        <a href="/user/detailProduct_User?id_user=<%= id_user0 %>&id_product=<%= row1.id %>">
                                             <div class="mask rgba-white-slight"></div>
                                         </a>
                                     </div>
@@ -88,7 +94,8 @@
                                         <!--Title-->
                                         <h5 class="card-title"
                                             style="font-weight: lighter"><%= row1.name_product %></h5>
-                                        <p style="color: #333333; font-weight: bolder"><%= Intl.NumberFormat().format(row1.cost) %> VNĐ</p>
+                                        <p style="color: #333333; font-weight: bolder"><%= Intl.NumberFormat().format(row1.cost) %>
+                                            VNĐ</p>
                                         <!--Review-->
                                         <i class='fas fa-star blue-text'> </i>
                                         <i class='fas fa-star blue-text'> </i>
@@ -102,22 +109,22 @@
                         </div>
                     <% }) %>
                 </div>
-                <nav aria-label="Page navigation example">
+                <nav class="float-right" aria-label="Page navigation example">
                     <ul class="pagination pg-blue">
                         <li class="page-item ">
-                            <a class="page-link" tabindex="-1">Previous</a>
+                            <button class="page-link" tabindex="-1">Previous</button>
                         </li>
-                        <li class="page-item active">
-                            <a class="page-link">1 <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link">2 </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link">3</a>
-                        </li>
+                        <% pages.map((row3)=>{ %>
+                            <li class="page-item">
+                                <button type="button" onclick="btnPage(this)" class="page-link"
+                                        value="<%= row3.page %>"
+                                        id="btnPage">
+                                    <%= row3.page %><span class="sr-only">(current)</span>
+                                </button>
+                            </li>
+                        <% }) %>
                         <li class="page-item ">
-                            <a class="page-link">Next</a>
+                            <button class="page-link">Next</button>
                         </li>
                     </ul>
                 </nav>
@@ -154,8 +161,9 @@
         if (e.keyCode === 13) {
             const data_input_search = document.getElementById("data_input_search").value;
             try {
-                const result = await axios.post(`/searchProduct`, {data_input_search});
-                console.log(result.data);
+                const result = await axios.post(`/searchProduct?id_user=<%= id_user0 %>`, {data_input_search});
+                const body = result.data;
+                const id_user = body.id_user;
                 let html = '';
                 result.data.result_search.map((data) => {
                     html += '<div class="col mb-3">\n' +
@@ -166,7 +174,7 @@
                         '            <div class="view overlay">\n' +
                         '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
                         '                     alt="Card image cap">\n' +
-                        '                <a href="/user/detailProduct_User?id=' + data.id + '">\n' +
+                        '                <a href="/user/detailProduct_User?id_user=' + id_user + '&id_product=' + data.id + '">\n' +
                         '                    <div class="mask rgba-white-slight"></div>\n' +
                         '                </a>\n' +
                         '            </div>\n' +
@@ -193,6 +201,103 @@
             } catch (e) {
                 console.error(e);
             }
+        }
+    }
+</script>
+
+<!--phân trang-->
+<script>
+    const btnPage = async (valueBtnPage) => {
+        try {
+            const result = await axios.post(`/pagination?id_user=${<%= id_user0 %>}&page=${valueBtnPage.value}`);
+            const body = result.data;
+            console.log(body)
+            const id_user1 = body.id_user;
+            let html = '';
+            if (body.msg === 'reset page 1') {
+                window.open(`/homeUser?id_user=${<%= id_user0 %>}&page=${valueBtnPage.value}`, `_self`);
+            } else {
+                body.sanpham.forEach((data) => {
+                    html += '<div class="col mb-3"> \n' +
+                        '    <!-- Card --> \n' +
+                        '    <a href="/user/detailProduct_User?id= ' + data.id + '"> \n' +
+                        '        <div class="card"> \n' +
+                        '            <!--Card image--> \n' +
+                        '            <div class="view overlay"> \n' +
+                        '                <img class="card-img-top" style="height: 348px" src=" ' + data.link_image + '" \n' +
+                        '                     alt="Card image cap"> \n' +
+                        '                <a href="/user/detailProduct_User?id_user= ' + id_user1 + '&id_product= ' + data.id + '"> \n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a> \n' +
+                        '            </div>\n' +
+                        '            <!--Card content--> \n' +
+                        '            <div class="card-body"> \n' +
+                        '                <!--Title--> \n' +
+                        '                <h5 class="card-title" \n' +
+                        '                    style="font-weight: lighter"> ' + data.name_product + ' </h5> \n' +
+                        '                <p style="color: #333333; font-weight: bolder"> ' + Intl.NumberFormat().format(data.cost) + '\n' +
+                        '                    VNĐ</p> \n' +
+                        '                <!--Review--> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '                <i class="fas fa-star blue-text"> </i> \n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '    </a> \n' +
+                        '    <!-- Card --> \n' +
+                        '</div>';
+                });
+                document.getElementById("divData").innerHTML = html;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<!--xem sản phẩm theo danh mục-->
+<script>
+    const viewAllProductByCategory = async (id) => {
+        try {
+            const result = await axios.get(`/viewProductByCategory_user?id_user=<%= id_user0 %>&id_category=${id}`);
+            console.log(result.data.result_of_search_by_category);
+            let html = '';
+            result.data.result_of_search_by_category.forEach((data) => {
+                html += '<div class="col mb-3">\n' +
+                    '    <a href="#!">\n' +
+                    '        <!-- Card -->\n' +
+                    '        <div class="card">\n' +
+                    '            <!--Card image-->\n' +
+                    '            <div class="view overlay">\n' +
+                    '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                    '                     alt="Card image cap">\n' +
+                    '                <a href="#!">\n' +
+                    '                    <div class="mask rgba-white-slight"></div>\n' +
+                    '                </a>\n' +
+                    '            </div>\n' +
+                    '\n' +
+                    '            <!--Card content-->\n' +
+                    '            <div class="card-body">\n' +
+                    '                <!--Title-->\n' +
+                    '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                    '                <!--Review-->\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                    '                <p>' + data.cost + ' VNĐ</p>\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <!-- Card -->\n' +
+                    '    </a>\n' +
+                    '</div>\n';
+            })
+            document.getElementById("divData").innerHTML = html;
+        } catch (e) {
+            console.error(e);
         }
     }
 </script>

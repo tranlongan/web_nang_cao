@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phần cho user - Thanh toán</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+<!-- Bắt đầu code-->
+<div class="container-fluid pb-2" style="background-color: gainsboro">
+    <!--    row 1-->
+    <div>
+        <a class="navbar-brand" href="/homeUser?id_user=<%= id_user %>">Trang chủ</a>
+        <!--        nút home-->
+        <div class="float-right">
+            <div class="navbar-brand">Xin chào <span
+                        style="font-weight: bolder"><%= result_name_account[0].name_user %></span></div>
+            <a class="navbar-brand" href="/">Đăng xuất</a>
+        </div>
+    </div>
+    <% result_total_money.map((row)=>{ %>
+        <div class="row">
+            <div>
+                <h3>Tổng tiền <font style="color: #00B7FF"><%= result_name_account[0].name_user %></font> phải trả là:
+                    <span id="spanMoney"><%= Intl.NumberFormat().format(row.total_amount) %></span></h3>
+            </div>
+        </div>
+    <% }) %>
+</div>
+<!-- Kết thúc code-->
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+</html>
