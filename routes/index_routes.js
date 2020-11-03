@@ -43,14 +43,17 @@ router.get('/user/pay', controller.pay);
 // bình luận trong bài viết chi tiết
 router.post('/addComment', controller.addComment);
 
+// rep bình luận
+router.post('/addReplyComment', controller.addReplyComment);
+
+router.get('/getReplyComment', controller.getReplyComment);
+
 //phân trang
 router.post('/pagination', controller.pagination);
 
 // tìm kiếm sản phẩm theo danh mục
 router.get('/viewProductByCategory_user', controller.viewProductByCategory_user);
 
-// append div
-router.get('/appendDiv', controller.appendDiv);
 // ****************************************************************************
 // load home của admin
 router.get('/admin/loadCategoryAndHome', controller.loadCategoryAndHome);

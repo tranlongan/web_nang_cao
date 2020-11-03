@@ -141,13 +141,20 @@ const detailProduct_User = (req, res) => {
     const sql = `SELECT * FROM san_pham WHERE id = '${id_geted}'`;
     const sql1 = `SELECT * FROM comment WHERE id_of_product = '${id_geted}'`;
     const sql2 = `SELECT * FROM comment WHERE id_of_user = '${id_geted0}'`;
+    // const sql3 = `SELECT * FROM reply_comment WHERE id_of_comment = ${}`
+
     connection.query(sql0, (err, result_account) => {
         connection.query(sql1, (err, result_comment) => {
             connection.query(sql, (err, result) => {
-                connection.query(sql2, (err, result_id_comment)=>{
-                    res.render('user/detailProduct_User', {result, id_geted0, result_account, result_comment, result_id_comment});
+                connection.query(sql2, (err, result_id_comment) => {
+                        res.render('user/detailProduct_User', {
+                            result,
+                            id_geted0,
+                            result_account,
+                            result_comment,
+                            result_id_comment,
+                    })
                 })
-                // console.log(id_geted0);
             })
         })
     })
@@ -319,6 +326,53 @@ const addComment = (req, res) => {
     })
 }
 
+// trả lời bình luận
+const addReplyComment = async (req, res) => {
+    upload(req, res, async (err) => {
+        try {
+            const id_user = req.query.id_user;
+            const id_product = req.query.id_product;
+            const id_comment = req.query.id_comment;
+            const {text_area_reply} = req.body;
+
+            let date_ob = new Date();
+            let date = ("0" + date_ob.getDate()).slice(-2);
+            // current month
+            let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+            // current year
+            let year = date_ob.getFullYear();
+            let timeFull = "Ngày " + date + " tháng " + month + ", " + year;
+
+            const result_name_user = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
+            const name_user = result_name_user[0].name_user;
+            const add_reply = await query(`INSERT INTO reply_comment (id, id_of_user, id_of_product, id_of_comment, name_user,content_reply, date_reply) VALUES (null ,'${id_user}','${id_product}','${id_comment}','${name_user}','${text_area_reply}','${timeFull}')`)
+
+            res.json({
+                msg: 'ok'
+            })
+
+            console.log(text_area_reply);
+            // console.log(result_reply);
+        } catch (e) {
+            console.error(e);
+        }
+    })
+
+}
+
+const getReplyComment = async (req, res) =>{
+    try {
+        const id_comment = req.query.id_comment;
+        const id_user = req.query.id_user;
+        const result_reply = await query(`SELECT * FROM reply_comment`);
+        res.json({
+            result_reply
+        })
+    }catch (e) {
+        console.log(e);
+    }
+}
+
 // phân trang
 const pagination = async (req, res) => {
     const {page = 1, limit = 6, id_user} = req.query;
@@ -361,16 +415,6 @@ const viewProductByCategory_user = (req, res) => {
     })
 }
 
-// append div
-const appendDiv = async (req, res) =>{
-    try {
-        const id_comment = req.query.id_comment;
-        const result_div = await query(`SELECT * FROM text_area`);
-
-    }catch (e) {
-        console.log(e);
-    }
-}
 // *********************************************************************************
 
 
@@ -562,9 +606,9 @@ const loadLogin = (req, res) => {
 
 module.exports = {
     loadLogin, loadCategoryAndHome, homeUser, pageCart,
-    addCategory, addProduct, addCart, addComment, deleteProductFromCart, deleteProduct,
+    addCategory, addProduct, addCart, addComment, deleteProductFromCart, deleteProduct, addReplyComment,
     viewAllProduct, viewDetailProduct, viewProductByCategory_user, viewProductByCategory,
-    editProduct, searchProduct, sumCost, toPay, pay, appendDiv,
+    editProduct, searchProduct, sumCost, toPay, pay, getReplyComment,
     registerAccountUser, loginAccountUser,
     detailProduct_User, pagination
 }
