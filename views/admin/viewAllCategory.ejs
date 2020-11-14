@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh mục</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="mb-4">
+        <!--        nút home-->
+        <a class="navbar-brand" href="/admin/loadCategoryAndHome">Trang chủ</a>
+        <a class="navbar-brand" href="/admin/viewAllCategory">Quay lại</a>
+    </div>
+
+    <div id="divData">
+        <h4>Tổng quan danh mục</h4>
+
+        <% result_category.map((row2)=>{ %>
+            <ul class="nav">
+                <li class="nav-item mt-2">
+                    <%= row2.name_category %>
+                </li>
+                <li class="nav-item">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" style="color: #00B7FF" type="button"
+                               onclick="editCategory(<%= row2.id %>)">Sửa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/deleteCategory?id_category=<%= row2.id %>">Xóa</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        <% }) %>
+    </div>
+    <div id="err" style="color: red"></div>
+</div>
+
+
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    const editCategory = async (id) => {
+        try {
+            const result = await axios.get(`/getNameCategory?id_category=${id}`);
+            let html = '';
+            result.data.result_name_category.map((data)=>{
+                html += '<div>\n' +
+                    '    <input type="text" value="'+data.name_category+'" id="input_edit_category" class="form-control">\n' +
+                    '    <button onclick="doEditCategory(' + id + ')" type="button" class="btn btn-outline-cyan">Sửa danh mục</button>\n' +
+                    '</div>';
+            })
+            document.getElementById("divData").innerHTML = html;
+
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const doEditCategory = async (id) => {
+        try {
+            const input_edit_category = document.getElementById("input_edit_category").value;
+            const formData = new FormData();
+            formData.append("input_edit_category", input_edit_category);
+            const result = await axios.post(`/editCategory?id_category=${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            const body = result.data;
+            if (body.msg === 'nothing') {
+                let html = '';
+                html += '<div style="color: red">Bạn phải nhập tên thay thế chứ</div>';
+                document.getElementById("err").innerHTML = html;
+            }
+            if (body.msg === 'ok') {
+                alert('Chỉnh sửa thành công');
+                window.open(`/admin/viewAllCategory`, `_self`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+</body>
+</html>

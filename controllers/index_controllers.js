@@ -91,7 +91,7 @@ const loginAccountUser = (req, res) => {
 
 // load home của user
 const homeUser = async (req, res) => {
-    const six = 6;
+    const six = 3;
     const id_user0 = req.query.id_user;
     const sql2 = `SELECT * FROM page`;
     const sql = `SELECT * FROM danh_muc`;
@@ -147,12 +147,12 @@ const detailProduct_User = (req, res) => {
         connection.query(sql1, (err, result_comment) => {
             connection.query(sql, (err, result) => {
                 connection.query(sql2, (err, result_id_comment) => {
-                        res.render('user/detailProduct_User', {
-                            result,
-                            id_geted0,
-                            result_account,
-                            result_comment,
-                            result_id_comment,
+                    res.render('user/detailProduct_User', {
+                        result,
+                        id_geted0,
+                        result_account,
+                        result_comment,
+                        result_id_comment,
                     })
                 })
             })
@@ -360,7 +360,7 @@ const addReplyComment = async (req, res) => {
 
 }
 
-const getReplyComment = async (req, res) =>{
+const getReplyComment = async (req, res) => {
     try {
         const id_comment = req.query.id_comment;
         const id_user = req.query.id_user;
@@ -368,14 +368,14 @@ const getReplyComment = async (req, res) =>{
         res.json({
             result_reply
         })
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }
 
 // phân trang
 const pagination = async (req, res) => {
-    const {page = 1, limit = 6, id_user} = req.query;
+    const {page = 1, limit = 3, id_user} = req.query;
     try {
         const sanpham = await query(`SELECT * FROM san_pham LIMIT ${limit} OFFSET ${(page - 1) * limit}`);
         const count = (await query(`SELECT COUNT(*) as numberSp FROM san_pham`))[0].numberSp;
@@ -398,11 +398,14 @@ const pagination = async (req, res) => {
 const searchProduct = (req, res) => {
     const {data_input_search} = req.body;
     const id_user = req.query.id_user;
-    const sql = `SELECT * FROM san_pham WHERE cost = '${data_input_search}' OR name_product ='${data_input_search}'`;
-    connection.query(sql, (err, result_search) => {
+    // const sql = `SELECT * FROM san_pham WHERE cost < '${data_input_search}'`;
+    const sql1 = `SELECT * FROM san_pham WHERE name_product LIKE '%${data_input_search}%' OR cost LIKE '%${data_input_search}%' OR name_category LIKE '%${data_input_search}%'`;
+    // connection.query(sql, (err, result_search)=>{
+    connection.query(sql1, (err, result_search) => {
         res.json({result_search, id_user});
-        console.log(sql);
+        console.log(sql1);
     })
+    // })
 }
 
 // Tìm kiếm theo danh mục
@@ -411,7 +414,58 @@ const viewProductByCategory_user = (req, res) => {
     let id_user = req.query.id_user;
     let sql = `SELECT * FROM san_pham WHERE id_of_category = '${id_category}'`;
     connection.query(sql, (err, result_of_search_by_category) => {
-        res.json({result_of_search_by_category});
+        res.json({id_user, result_of_search_by_category});
+    })
+}
+
+const searchProductByMoney = async (req, res) => {
+    upload(req, res, async (err) => {
+        try {
+            const id_user = req.query.id_user;
+            const id_category = req.query.id_category;
+            const {headMoney, tailMoney} = req.body;
+
+            if (headMoney === '' && tailMoney === '') {
+                res.json({id_user, msg: 'nothing to find'});
+            }
+            if (headMoney === '' || tailMoney === '') {
+                if (tailMoney === '') {
+                    const starting_price = await query(`SELECT * FROM san_pham WHERE  cost > '${headMoney}' AND id_of_category = '${id_category}'`);
+                    res.json({
+                        msg: 'starting_price',
+                        id_user,
+                        starting_price
+                    });
+                }
+                if (headMoney === '') {
+                    const end_price = await query(`SELECT * FROM san_pham WHERE cost < '${tailMoney}' AND id_of_category = '${id_category}'`);
+                    res.json({
+                        msg: 'end_price',
+                        id_user,
+                        end_price
+                    })
+                }
+            }
+            if (headMoney === tailMoney) {
+                const start_equal_end_price = await query(`SELECT * FROM san_pham WHERE cost = '${headMoney}' AND id_of_category = '${id_category}' `);
+                res.json({
+                    msg: 'start_equal_end_price',
+                    id_user,
+                    start_equal_end_price
+                })
+            }
+            if (headMoney !='' && tailMoney !=''){
+                const start_and_end_price = await query(`SELECT * FROM san_pham WHERE (cost > '${headMoney}' AND cost < '${tailMoney}') AND id_of_category = '${id_category}' `);
+                res.json({
+                    msg: 'start_and_end_price',
+                    id_user,
+                    start_and_end_price
+                })
+                // console.log(start_and_end_price);
+            }
+        } catch (e) {
+            console.log(e);
+        }
     })
 }
 
@@ -529,6 +583,65 @@ const viewDetailProduct = (req, res, next) => {
     })
 }
 
+// xem tất cả các danh mục
+const viewAllCategory = async (req, res) =>{
+    try {
+        const result_category = await query(`SELECT * FROM danh_muc`);
+        res.render(`admin/viewAllCategory`,{result_category});
+
+    }catch (e) {
+        console.log(e);
+    }
+}
+
+// sửa danh mục
+const editCategory = async (req, res) =>{
+    upload(req, res, async () =>{
+        try {
+            const {input_edit_category} = req.body;
+            const id_category = req.query.id_category;
+            if(input_edit_category === ''){
+                res.json({
+                    msg: 'nothing'
+                })
+            }else {
+                const result_edit = await query(`UPDATE danh_muc SET name_category = '${input_edit_category}' WHERE id = '${id_category}'`);
+                const sql = `UPDATE danh_muc SET name_category = '${input_edit_category}' WHERE id = '${id_category}'`;
+                res.json({
+                    msg: 'ok'
+                })
+                console.log(sql);
+            }
+        }catch (e){
+            console.log(e);
+        }
+    })
+}
+
+// get name category
+const getNameCategory = async (req, res) =>{
+    try {
+        const {id_category} = req.query;
+        const result_name_category = await query(`SELECT * FROM danh_muc WHERE id = '${id_category}'`)    ;
+        res.json({
+            result_name_category
+        })
+    }catch (e) {
+        console.log(e);
+    }
+}
+
+// xóa danh mục
+const deleteCategory = async (req, res) =>{
+    try {
+        const {id_category} = req.query;
+        const deleteCategory = await query(`DELETE FROM danh_muc WHERE id = '${id_category}'`);
+        res.send("<script type='text/javascript'>window.open('/admin/viewAllCategory', '_self');</script>");
+    }catch (e) {
+        console.log(e);
+    }
+}
+
 // xóa sản phẩm
 const deleteProduct = async (req, res) => {
     try {
@@ -607,8 +720,8 @@ const loadLogin = (req, res) => {
 module.exports = {
     loadLogin, loadCategoryAndHome, homeUser, pageCart,
     addCategory, addProduct, addCart, addComment, deleteProductFromCart, deleteProduct, addReplyComment,
-    viewAllProduct, viewDetailProduct, viewProductByCategory_user, viewProductByCategory,
-    editProduct, searchProduct, sumCost, toPay, pay, getReplyComment,
-    registerAccountUser, loginAccountUser,
+    viewAllProduct, viewDetailProduct, viewProductByCategory_user, viewProductByCategory, viewAllCategory,
+    editProduct, searchProduct, sumCost, toPay, pay, getReplyComment, editCategory, deleteCategory,
+    registerAccountUser, loginAccountUser, searchProductByMoney, getNameCategory,
     detailProduct_User, pagination
 }

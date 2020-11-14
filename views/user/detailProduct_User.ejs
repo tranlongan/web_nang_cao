@@ -159,7 +159,6 @@
                     </div>
                     <div id="reply1" value="<%= row1.id %>">
                     </div>
-
                 </div>
 
             </div>
@@ -260,6 +259,8 @@
             const node4 = document.createElement("button");
             // const text_node = document.createTextNode("Gửi phản hồi");
 
+            // node1.setAttribute('style', 'display: block');
+
             node2.setAttribute('style', 'max-width: inherit; width: 100%')
             node2.setAttribute('id', 'text_area_reply');
 
@@ -270,7 +271,11 @@
 
             node1.innerHTML += node2.outerHTML + node3.outerHTML + node4.outerHTML;
 
-            document.getElementById(id_of_comment).appendChild(node1);
+            // if(node1 == undefined){
+                document.getElementById(id_of_comment).appendChild(node1);
+            // }else {
+                // node1.style.display = 'block';
+            // }
 
         } catch (e) {
             console.error(e);

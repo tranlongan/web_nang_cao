@@ -42,9 +42,14 @@
                     <font style="font-size: 19px; font-weight: bolder">Giỏ hàng</font>
                 </a>
             </li>
-            <li class="nav-item mr-5 mt-2">
+            <li class="nav-item mr-4 mt-2">
                 <a style="color: #444444" href="/user/pay?id_user=<%= id_user0 %>">
                     <font style="font-size: 19px">Thanh toán</font>
+                </a>
+            </li>
+            <li class="nav-item mr-5 mt-2">
+                <a style="color: #444444" type="button" onclick="chooseNumberPageToDisplay(<%= id_user0 %>)">
+                    <font style="font-size: 19px">Tùy chỉnh số sp hiển thị</font>
                 </a>
             </li>
             <li class="nav-item">
@@ -58,7 +63,7 @@
         <div class="row">
             <!--        phần danh mục-->
             <div class="col-3">
-                <div>
+                <div id="divData1">
                     <div class="list-group" id="list-tab" role="tablist">
                         <% result.map((row)=>{ %>
                             <a type="button" onclick="viewAllProductByCategory(<%= row.id %>)"
@@ -109,7 +114,7 @@
                         </div>
                     <% }) %>
                 </div>
-                <nav class="float-right" aria-label="Page navigation example">
+                <nav id="navPage" class="float-right" aria-label="Page navigation example">
                     <ul class="pagination pg-blue">
                         <li class="page-item ">
                             <button class="page-link" tabindex="-1">Previous</button>
@@ -164,7 +169,8 @@
                 const result = await axios.post(`/searchProduct?id_user=<%= id_user0 %>`, {data_input_search});
                 const body = result.data;
                 const id_user = body.id_user;
-                let html = '';
+                let html = '', html1 = '';
+                let get;
                 result.data.result_search.map((data) => {
                     html += '<div class="col mb-3">\n' +
                         '    <a href="/user/detailProduct_User?id=' + data.id + '">\n' +
@@ -189,15 +195,29 @@
                         '                <i class=\'fas fa-star blue-text\'> </i>\n' +
                         '                <i class=\'fas fa-star blue-text\'> </i>\n' +
                         '                <i class=\'fas fa-star blue-text\'> </i>\n' +
-                        '                <p>' + data.cost + ' VNĐ</p>\n' +
+                        '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
                         '            </div>\n' +
                         '        </div>\n' +
                         '        <!-- Card -->\n' +
                         '    </a>\n' +
                         '</div>\n';
+                    get = data.id;
                 })
+                html1 += '<div class="p-2 mt-5" style="border: 1px solid #aaaaaa">\n' +
+                    '    <h4>Giá</h4>\n' +
+                    '    <h6 style="color: #acacac">Chọn giá khoảng</h6>\n' +
+                    '    <div>\n' +
+                    '        <input id="headMoney" placeholder="head" class="mr-2" style="width: inherit; width: 25%" type="text">\n' +
+                    '        -\n' +
+                    '        <input id="tailMoney" placeholder="tail" class="ml-2" style="width: inherit; width: 25%" type="text">\n' +
+                    '    </div>\n' +
+                    '    <div>\n' +
+                    '        <button onclick="searchProductByMoney(' + get + ')" type="button" class="ml-0 pt-1 pb-1 pl-4 pr-4 btn btn-outline-cyan">OK</button>\n' +
+                    '    </div>\n' +
+                    '</div>';
                 document.getElementById("divData").innerHTML = html;
-                console.log(html1);
+                document.getElementById("divData1").innerHTML = html1;
+                document.getElementById("navPage").style.display = 'none';
             } catch (e) {
                 console.error(e);
             }
@@ -263,8 +283,11 @@
         try {
             const result = await axios.get(`/viewProductByCategory_user?id_user=<%= id_user0 %>&id_category=${id}`);
             console.log(result.data.result_of_search_by_category);
-            let html = '';
-            result.data.result_of_search_by_category.forEach((data) => {
+            const body = result.data;
+            const id_user = body.id_user;
+
+            let html = '', html1 = '';
+            body.result_of_search_by_category.forEach((data) => {
                 html += '<div class="col mb-3">\n' +
                     '    <a href="#!">\n' +
                     '        <!-- Card -->\n' +
@@ -273,11 +296,10 @@
                     '            <div class="view overlay">\n' +
                     '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
                     '                     alt="Card image cap">\n' +
-                    '                <a href="#!">\n' +
+                    '                <a href="/user/detailProduct_User?id_user= ' + id_user + '&id_product= ' + data.id + '">\n' +
                     '                    <div class="mask rgba-white-slight"></div>\n' +
                     '                </a>\n' +
                     '            </div>\n' +
-                    '\n' +
                     '            <!--Card content-->\n' +
                     '            <div class="card-body">\n' +
                     '                <!--Title-->\n' +
@@ -288,19 +310,206 @@
                     '                <i class=\'fas fa-star blue-text\'> </i>\n' +
                     '                <i class=\'fas fa-star blue-text\'> </i>\n' +
                     '                <i class=\'fas fa-star blue-text\'> </i>\n' +
-                    '                <p>' + data.cost + ' VNĐ</p>\n' +
+                    '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
                     '            </div>\n' +
                     '        </div>\n' +
                     '        <!-- Card -->\n' +
                     '    </a>\n' +
                     '</div>\n';
             })
+
+            html1 += '<div class="p-2 mt-5" style="border: 1px solid #aaaaaa">\n' +
+                '    <h4>Giá</h4>\n' +
+                '    <h6 style="color: #acacac">Chọn giá khoảng</h6>\n' +
+                '    <div>\n' +
+                '        <input id="headMoney" placeholder="head" class="mr-2" style="width: inherit; width: 25%" type="text">\n' +
+                '        -\n' +
+                '        <input id="tailMoney" placeholder="tail" class="ml-2" style="width: inherit; width: 25%" type="text">\n' +
+                '    </div>\n' +
+                '    <div>\n' +
+                '        <button onclick="searchProductByMoney(' + id + ')" type="button" class="ml-0 pt-1 pb-1 pl-4 pr-4 btn btn-outline-cyan">OK</button>\n' +
+                '    </div>\n' +
+                '</div>';
+
             document.getElementById("divData").innerHTML = html;
+            document.getElementById("divData1").innerHTML = html1;
+            document.getElementById("navPage").style.display = 'none';
         } catch (e) {
             console.error(e);
         }
     }
 </script>
 
+<!--chọn giá dựa trên money head và money tail-->
+<script>
+    const searchProductByMoney = async (id) => {
+        try {
+            const headMoney = document.getElementById("headMoney").value;
+            const tailMoney = document.getElementById("tailMoney").value;
+            const formData = new FormData();
+            formData.append("headMoney", headMoney);
+            formData.append("tailMoney", tailMoney);
+            const result = await axios.post(`/searchProductByMoney?id_user=<%= id_user0 %>&id_category=${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            const body = result.data;
+            const id_user = body.id_user[0];
+            console.log(id_user);
+            let html = '';
+            if (body.msg === 'nothing to find') {
+                html += '<div>Không có sản phẩm nào</div>';
+                document.getElementById("divData").innerHTML = html;
+            }
+            // head money
+            if (body.msg === 'starting_price') {
+                body.starting_price.map((data) => {
+                    html += '<div class="col mb-3">\n' +
+                        '    <a href="#!">\n' +
+                        '        <!-- Card -->\n' +
+                        '        <div class="card">\n' +
+                        '            <!--Card image-->\n' +
+                        '            <div class="view overlay">\n' +
+                        '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                        '                     alt="Card image cap">\n' +
+                        '                <a href="/user/detailProduct_User?id_user= ' + id_user + '&id_product= ' + data.id + '">\n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a>\n' +
+                        '            </div>\n' +
+                        '            <!--Card content-->\n' +
+                        '            <div class="card-body">\n' +
+                        '                <!--Title-->\n' +
+                        '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                        '                <!--Review-->\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '        <!-- Card -->\n' +
+                        '    </a>\n' +
+                        '</div>\n';
+                })
+                document.getElementById("divData").innerHTML = html;
+            }
+            // end money
+            if (body.msg === 'end_price') {
+                body.end_price.map((data) => {
+                    html += '<div class="col mb-3">\n' +
+                        '    <a href="#!">\n' +
+                        '        <!-- Card -->\n' +
+                        '        <div class="card">\n' +
+                        '            <!--Card image-->\n' +
+                        '            <div class="view overlay">\n' +
+                        '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                        '                     alt="Card image cap">\n' +
+                        '                <a href="/user/detailProduct_User?id_user= ' + id_user + '&id_product= ' + data.id + '">\n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a>\n' +
+                        '            </div>\n' +
+                        '            <!--Card content-->\n' +
+                        '            <div class="card-body">\n' +
+                        '                <!--Title-->\n' +
+                        '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                        '                <!--Review-->\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '        <!-- Card -->\n' +
+                        '    </a>\n' +
+                        '</div>\n';
+                })
+                document.getElementById("divData").innerHTML = html;
+            }
+            // head = tail
+            if (body.msg === 'start_equal_end_price') {
+                body.start_equal_end_price.map((data) => {
+                    html += '<div class="col mb-3">\n' +
+                        '    <a href="#!">\n' +
+                        '        <!-- Card -->\n' +
+                        '        <div class="card">\n' +
+                        '            <!--Card image-->\n' +
+                        '            <div class="view overlay">\n' +
+                        '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                        '                     alt="Card image cap">\n' +
+                        '                <a href="/user/detailProduct_User?id_user= ' + id_user + '&id_product= ' + data.id + '">\n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a>\n' +
+                        '            </div>\n' +
+                        '            <!--Card content-->\n' +
+                        '            <div class="card-body">\n' +
+                        '                <!--Title-->\n' +
+                        '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                        '                <!--Review-->\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '        <!-- Card -->\n' +
+                        '    </a>\n' +
+                        '</div>\n';
+                })
+                document.getElementById("divData").innerHTML = html;
+            }
+            // between
+            if (body.msg === 'start_and_end_price') {
+                body.start_and_end_price.map((data) => {
+                    html += '<div class="col mb-3">\n' +
+                        '    <a href="#!">\n' +
+                        '        <!-- Card -->\n' +
+                        '        <div class="card">\n' +
+                        '            <!--Card image-->\n' +
+                        '            <div class="view overlay">\n' +
+                        '                <img class="card-img-top" style="height: 369px" src="' + data.link_image + '"\n' +
+                        '                     alt="Card image cap">\n' +
+                        '                <a href="/user/detailProduct_User?id_user= ' + id_user + '&id_product= ' + data.id + '">\n' +
+                        '                    <div class="mask rgba-white-slight"></div>\n' +
+                        '                </a>\n' +
+                        '            </div>\n' +
+                        '            <!--Card content-->\n' +
+                        '            <div class="card-body">\n' +
+                        '                <!--Title-->\n' +
+                        '                <h4 class="card-title">' + data.name_product + '</h4>\n' +
+                        '                <!--Review-->\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <i class=\'fas fa-star blue-text\'> </i>\n' +
+                        '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '        <!-- Card -->\n' +
+                        '    </a>\n' +
+                        '</div>\n';
+                })
+                document.getElementById("divData").innerHTML = html;
+            }
+
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<!--chọn số sản phẩm để hiển thị mà user thích -->
+<script>
+    const chooseNumberPageToDisplay = async (id_user) => {
+
+    }
+</script>
 </body>
 </html>
