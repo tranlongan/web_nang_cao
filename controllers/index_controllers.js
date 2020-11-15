@@ -35,7 +35,6 @@ function checkFileType(file, cb) {
 };
 // Kết thúc phần set up ảnh
 // *******************************************************************************
-
 // phần cho user
 // Đăng ký tài khoản user
 const registerAccountUser = (req, res) => {
@@ -91,13 +90,17 @@ const loginAccountUser = (req, res) => {
 
 // load home của user
 const homeUser = async (req, res) => {
-    const six = 3;
+    const data_of_number_page_cookie = req.cookies.number_page;
+    const number_limit_of_cookie = data_of_number_page_cookie.numberPage;
+    const number_id_user_of_cookie = data_of_number_page_cookie.idUser;
+
+    const number_limit = 3;
     const id_user0 = req.query.id_user;
     const sql2 = `SELECT * FROM page`;
     const sql = `SELECT * FROM danh_muc`;
     const sql0 = `SELECT * FROM account_user WHERE id = '${id_user0}'`;
     const sql3 = `SELECT * FROM san_pham `;
-    const sql1 = `SELECT * FROM san_pham LIMIT ${six}`;
+    const sql1 = `SELECT * FROM san_pham LIMIT ${number_limit}`;
 
     // dùng để đếm số trang
     connection.query(sql2, (err, count_page) => {
@@ -107,30 +110,33 @@ const homeUser = async (req, res) => {
             connection.query(sql0, (err, result_account) => {
                 // dùng để đếm số lượng sản phẩm
                 connection.query(sql3, (err, count_number_product) => {
-                    const milestones = Math.ceil(((count_number_product.length) / six));
-                    const sql4 = `SELECT * FROM page LIMIT ${milestones}`;
-                    if (milestones <= parseInt(count_page.length)) {
-                        // dùng để in ra số trang vừa đủ
-                        connection.query(sql4, (err, pages) => {
-                            // dùng để in ra 4 sản phẩm đầu tiên, tương tự như page 1
-                            connection.query(sql1, (err, result_4_product) => {
-                                res.render('user/homeUser', {
-                                    pages,
-                                    result: result_category,
-                                    result1: result_4_product,
-                                    id_user0,
-                                    result_account
-                                });
+                    // if(id_user0 == number_id_user_of_cookie){
+                        const milestones = Math.ceil(((count_number_product.length) / number_limit));
+                        const sql4 = `SELECT * FROM page LIMIT ${milestones}`;
+                        if (milestones <= parseInt(count_page.length)) {
+                            // dùng để in ra số trang vừa đủ
+                            connection.query(sql4, (err, pages) => {
+                                // dùng để in ra 4 sản phẩm đầu tiên, tương tự như page 1
+                                connection.query(sql1, (err, result_4_product) => {
+                                    res.render('user/homeUser', {
+                                        pages,
+                                        result: result_category,
+                                        result1: result_4_product,
+                                        id_user0,
+                                        result_account
+                                    });
+                                })
                             })
-                        })
-                    } else {
-                        console.log('Ko đủ chỗ trống');
-                    }
+                        } else {
+                            console.log('Ko đủ chỗ trống');
+                        }
+                    // }
                 })
             })
         });
     })
 
+    console.log(number_id_user_of_cookie);
 }
 
 // xem chi tiết sản phẩm để đặt mua
@@ -394,6 +400,21 @@ const pagination = async (req, res) => {
     }
 }
 
+const insertNumberPageToCookie = (req, res) => {
+
+    const {data_select_number_page} = req.body;
+    const id_user = req.query.id_user;
+    let number_page = {
+        idUser: id_user,
+        numberPage: data_select_number_page
+    }
+    // lưu cookie trong vòng 12 giờ
+    res.cookie('number_page', number_page, {maxAge: 12 * 60 * 60 * 1000});
+    res.json({
+        msg: 'ok'
+    })
+}
+
 // Tìm kiếm sản phẩm
 const searchProduct = (req, res) => {
     const {data_input_search} = req.body;
@@ -418,6 +439,7 @@ const viewProductByCategory_user = (req, res) => {
     })
 }
 
+// Tìm kiếm theo giá tiền
 const searchProductByMoney = async (req, res) => {
     upload(req, res, async (err) => {
         try {
@@ -454,7 +476,7 @@ const searchProductByMoney = async (req, res) => {
                     start_equal_end_price
                 })
             }
-            if (headMoney !='' && tailMoney !=''){
+            if (headMoney != '' && tailMoney != '') {
                 const start_and_end_price = await query(`SELECT * FROM san_pham WHERE (cost > '${headMoney}' AND cost < '${tailMoney}') AND id_of_category = '${id_category}' `);
                 res.json({
                     msg: 'start_and_end_price',
@@ -477,19 +499,19 @@ const loadCategoryAndHome = (req, res, next) => {
     const sql0 = `SELECT * FROM page`;
     const sql = `SELECT * FROM danh_muc`;
     const sql1 = `SELECT * FROM san_pham`;
-    const six = 6;
+    const number_limit = 6;
     // đếm số trang
     connection.query(sql0, (err, result_page) => {
         // danh mục
         connection.query(sql, (err, result) => {
             // tổng sản phẩm
             connection.query(sql1, (err, result1) => {
-                let milestones = Math.ceil((result1.length) / six);
+                let milestones = Math.ceil((result1.length) / number_limit);
                 if (milestones <= (result_page.length)) {
                     const sql2 = `SELECT * FROM page LIMIT ${milestones}`;
                     // số trang vừa đủ
                     connection.query(sql2, (err, pages) => {
-                        const sql3 = `SELECT * FROM san_pham LIMIT ${six}`;
+                        const sql3 = `SELECT * FROM san_pham LIMIT ${number_limit}`;
                         // in ra số sản phẩm limit
                         connection.query(sql3, (err, result_limit) => {
                             res.render('admin/index', {result, result_limit, pages});
@@ -584,27 +606,26 @@ const viewDetailProduct = (req, res, next) => {
 }
 
 // xem tất cả các danh mục
-const viewAllCategory = async (req, res) =>{
+const viewAllCategory = async (req, res) => {
     try {
         const result_category = await query(`SELECT * FROM danh_muc`);
-        res.render(`admin/viewAllCategory`,{result_category});
-
-    }catch (e) {
+        res.render(`admin/viewAllCategory`, {result_category});
+    } catch (e) {
         console.log(e);
     }
 }
 
 // sửa danh mục
-const editCategory = async (req, res) =>{
-    upload(req, res, async () =>{
+const editCategory = async (req, res) => {
+    upload(req, res, async () => {
         try {
             const {input_edit_category} = req.body;
             const id_category = req.query.id_category;
-            if(input_edit_category === ''){
+            if (input_edit_category === '') {
                 res.json({
                     msg: 'nothing'
                 })
-            }else {
+            } else {
                 const result_edit = await query(`UPDATE danh_muc SET name_category = '${input_edit_category}' WHERE id = '${id_category}'`);
                 const sql = `UPDATE danh_muc SET name_category = '${input_edit_category}' WHERE id = '${id_category}'`;
                 res.json({
@@ -612,32 +633,32 @@ const editCategory = async (req, res) =>{
                 })
                 console.log(sql);
             }
-        }catch (e){
+        } catch (e) {
             console.log(e);
         }
     })
 }
 
 // get name category
-const getNameCategory = async (req, res) =>{
+const getNameCategory = async (req, res) => {
     try {
         const {id_category} = req.query;
-        const result_name_category = await query(`SELECT * FROM danh_muc WHERE id = '${id_category}'`)    ;
+        const result_name_category = await query(`SELECT * FROM danh_muc WHERE id = '${id_category}'`);
         res.json({
             result_name_category
         })
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }
 
 // xóa danh mục
-const deleteCategory = async (req, res) =>{
+const deleteCategory = async (req, res) => {
     try {
         const {id_category} = req.query;
         const deleteCategory = await query(`DELETE FROM danh_muc WHERE id = '${id_category}'`);
         res.send("<script type='text/javascript'>window.open('/admin/viewAllCategory', '_self');</script>");
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }
@@ -722,6 +743,6 @@ module.exports = {
     addCategory, addProduct, addCart, addComment, deleteProductFromCart, deleteProduct, addReplyComment,
     viewAllProduct, viewDetailProduct, viewProductByCategory_user, viewProductByCategory, viewAllCategory,
     editProduct, searchProduct, sumCost, toPay, pay, getReplyComment, editCategory, deleteCategory,
-    registerAccountUser, loginAccountUser, searchProductByMoney, getNameCategory,
+    registerAccountUser, loginAccountUser, searchProductByMoney, getNameCategory, insertNumberPageToCookie,
     detailProduct_User, pagination
 }

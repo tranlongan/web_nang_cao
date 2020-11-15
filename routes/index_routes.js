@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
 const controller = require('../controllers/index_controllers');
-
 /* GET home page. */
 // router.get('/', (req, res) => res.render('index'));
 
@@ -26,7 +24,7 @@ router.post('/searchProduct', controller.searchProduct);
 router.get('/viewProductByCategory_user', controller.viewProductByCategory_user);
 
 // tìm sản phẩm theo mức tiền
-router.post('/searchProductByMoney',controller.searchProductByMoney);
+router.post('/searchProductByMoney', controller.searchProductByMoney);
 
 //thêm vào giỏ hàng
 router.post('/addCart', controller.addCart);
@@ -41,7 +39,7 @@ router.get('/user/pageCart', controller.pageCart);
 router.get('/sumCost', controller.sumCost);
 
 // thanh toán
-router.get('/user/toPay',controller.toPay);
+router.get('/user/toPay', controller.toPay);
 
 // trang thanh toán
 router.get('/user/pay', controller.pay);
@@ -55,6 +53,9 @@ router.get('/getReplyComment', controller.getReplyComment);
 
 //phân trang
 router.post('/pagination', controller.pagination);
+
+// thêm số sản phẩm mà user muốn hiển thị vào cookie
+router.post('/insertNumberPageToCookie', controller.insertNumberPageToCookie);
 
 // ****************************************************************************
 // load home của admin
@@ -81,7 +82,7 @@ router.get('/admin/viewAllCategory', controller.viewAllCategory);
 // get name category
 router.get('/getNameCategory', controller.getNameCategory);
 // sửa danh mục
-router.post('/editCategory',controller.editCategory);
+router.post('/editCategory', controller.editCategory);
 // xóa danh mục
 router.get('/deleteCategory', controller.deleteCategory);
 

@@ -508,7 +508,42 @@
 <!--chọn số sản phẩm để hiển thị mà user thích -->
 <script>
     const chooseNumberPageToDisplay = async (id_user) => {
+        try {
+            let html = '';
+            html += '<div class="mt-5">\n' +
+                '<h5> Chọn số sản phẩm mà bạn muốn hiển thị </h5>\n' +
+                '<select id="selectNumberPage" class="browser-default custom-select">\n' +
+                '  <option value="1">1</option>\n' +
+                '  <option value="2">2</option>\n' +
+                '  <option value="3">3</option>\n' +
+                '  <option value="4">4</option>\n' +
+                '  <option value="5">5</option>\n' +
+                '  <option value="6">6</option>\n' +
+                '  <option value="7">7</option>\n' +
+                '  <option value="8">8</option>\n' +
+                '  <option value="9">9</option>\n' +
+                '  <option value="10">10</option>\n' +
+                '</select>\n' +
+                '<button type="button" onclick="submitNumberPage('+id_user+')" class="btn btn-outline-cyan">Chọn</button>\n'+
+                '</div>';
+            document.getElementById("divData").innerHTML = html;
+            document.getElementById("navPage").style.display = 'none';
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
+    const submitNumberPage = async (id_user) =>{
+        try {
+            const data_select_number_page = document.getElementById("selectNumberPage").value;
+            const result = await axios.post(`/insertNumberPageToCookie?id_user=${id_user}`, {data_select_number_page});
+            const body = result.data;
+            if (body.msg === 'ok'){
+                window.open(`/homeUser?id_user=${id_user}`,`_self`);
+            }
+        }catch (e) {
+            console.error(e);
+        }
     }
 </script>
 </body>
