@@ -21,7 +21,7 @@
     <!--        nút home-->
     <a class="navbar-brand" href="/homeUser?id_user=<%= id_user0 %>">Trang chủ</a>
     <div class="float-right">
-        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><%= result_account[0].name_user %></span>
+        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><a href="/user/profile_user?id_user=<%= id_user0 %>"><%= result_account[0].name_user %></a></span>
         </div>
         <a class="navbar-brand" href="/">Đăng xuất</a>
     </div>
@@ -513,7 +513,6 @@
             html += '<div class="mt-5">\n' +
                 '<h5> Chọn số sản phẩm mà bạn muốn hiển thị </h5>\n' +
                 '<select id="selectNumberPage" class="browser-default custom-select">\n' +
-                '  <option value="1">1</option>\n' +
                 '  <option value="2">2</option>\n' +
                 '  <option value="3">3</option>\n' +
                 '  <option value="4">4</option>\n' +

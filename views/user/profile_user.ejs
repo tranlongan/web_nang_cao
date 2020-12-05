@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PROFILE</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+
+<div>
+    <!--        nút home-->
+    <a class="navbar-brand" href="/homeUser?id_user=<%= id_user %>">Trang chủ</a>
+    <div class="float-right">
+        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><a
+                        href="/user/profile_user?id_user=<%= id_user %>"><%= result_account[0].name_user %></a></span>
+        </div>
+        <a class="navbar-brand" href="/">Đăng xuất</a>
+    </div>
+</div>
+<!-- Bắt đầu code-->
+<div style="background-color: gainsboro">
+    <div class="container" style="background-color: white">
+        <div class="row">
+            <div class="col-3 pt-2 pb-2" style="background-color: gainsboro">
+                <!--                phần hiển thị tên user-->
+                <div class="row ml-4">
+                    <div class="mr-3">
+                        <img src="/images/unnamed.png" style="width: 48px; border-radius: 100%">
+                    </div>
+                    <div>
+                        Name_user
+                        <div style="color: burlywood">
+                            <i class="fas fa-pen"></i><span>Chỉnh hồ sơ</span>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row ml-4" type="button" data-toggle="collapse" data-target="#collapseProfile"
+                     aria-expanded="false" aria-controls="collapseProfile">
+                    <div class="mr-3">
+                        <img src="/images/unnamed.png" style="width: 24px; border-radius: 100%">
+                    </div>
+                    <div>
+                        Tài khoản của tôi
+                    </div>
+                </div>
+
+                <div>
+                    <div class="collapse" id="collapseProfile">
+                        <div class="mt-3">
+                            <nav class="nav flex-column lighten-4 pl-3 ml-5">
+                                <li class="nav-item mb-1" type="button" onclick="btnFile()">
+                                    Hồ sơ
+                                </li>
+                                <li class="nav-item mb-1" type="button" onclick="btnAddress()">
+                                    Địa chỉ
+                                </li>
+                                <li class="nav-item mb-1" type="button" onclick="btnChangePassW()">
+                                    Đổi mật khẩu
+                                </li>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-9" id="divData">
+                <h4>Hồ sơ cửa tôi</h4>
+                <h6>Quản lý thông tin hồ sơ để bảo mật tài khoản</h6>
+                <hr/>
+                <div class="row">
+                    <div class="col-7">
+                        <div class="pl-1">
+                            <div class="row mb-3">
+                                <div class="col-5" style="color: #aaaaaa">Tên Đăng Nhập</div>
+                                <div class="col-7">kthdhoang1998</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-5" style="color: #aaaaaa">Tên</div>
+                                <div class="col-7">
+                                    <input type="text">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-5" style="color: #aaaaaa">Số điện thoại</div>
+                                <div class="col-7">**********88<span><a href="#!" style="font-size: 12px"> Thay đổi</a></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-5" style="color: #aaaaaa">Giới tính</div>
+                                <div class="col-7">
+                                    <!-- Default inline 1-->
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="defaultInline1"
+                                               name="inlineDefaultRadiosExample">
+                                        <label class="custom-control-label" for="defaultInline1">Nam</label>
+                                    </div>
+
+                                    <!-- Default inline 2-->
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="defaultInline2"
+                                               name="inlineDefaultRadiosExample">
+                                        <label class="custom-control-label" for="defaultInline2">Nữ</label>
+                                    </div>
+
+                                    <!-- Default inline 3-->
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="defaultInline3"
+                                               name="inlineDefaultRadiosExample">
+                                        <label class="custom-control-label" for="defaultInline3">Khác</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-5" style="color: #aaaaaa">Ngày sinh</div>
+                                <div class="col-2">
+                                    <select>
+                                        <option>5</option>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <select>
+                                        <option>Tháng 10</option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <select>
+                                        <option>2001</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-3">
+                                <button class="btn btn-danger">
+                                    Lưu
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-5">
+                        <div class="p-2">
+                            <div class="" style="border-left: 1px solid #acacac">
+                                <div class="ml-2">
+                                    <img class="ml-5 mb-3" src="/images/unnamed.png"
+                                         style="width: 104px; border-radius: 100%">
+                                    <input type="file" value="Chọn ảnh">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- Kết thúc code-->
+
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+<!--phần nút hồ sơ, địa chỉ, đổi mật khẩu-->
+<script>
+    // nút hồ sơ
+    const btnFile = async () => {
+        try {
+            let html = '';
+            html += '<h4>Hồ sơ cửa tôi</h4>\n' +
+                '                <h6>Quản lý thông tin hồ sơ để bảo mật tài khoản</h6>\n' +
+                '                <hr/>\n' +
+                '                <div class="row">\n' +
+                '                    <div class="col-7">\n' +
+                '                        <div class="pl-1">\n' +
+                '                            <div class="row mb-3">\n' +
+                '                                <div class="col-5" style="color: #aaaaaa">Tên Đăng Nhập</div>\n' +
+                '                                <div class="col-7">kthdhoang1998</div>\n' +
+                '                            </div>\n' +
+                '\n' +
+                '                            <div class="row mb-3">\n' +
+                '                                <div class="col-5" style="color: #aaaaaa">Tên</div>\n' +
+                '                                <div class="col-7">\n' +
+                '                                    <input type="text">\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '\n' +
+                '                            <div class="row mb-3">\n' +
+                '                                <div class="col-5" style="color: #aaaaaa">Số điện thoại</div>\n' +
+                '                                <div class="col-7">**********88<span><a href="#!" style="font-size: 12px"> Thay đổi</a></span></div>\n' +
+                '                            </div>\n' +
+                '\n' +
+                '                            <div class="row mb-3">\n' +
+                '                                <div class="col-5" style="color: #aaaaaa">Giới tính</div>\n' +
+                '                                <div class="col-7">\n' +
+                '                                    <!-- Default inline 1-->\n' +
+                '                                    <div class="custom-control custom-radio custom-control-inline">\n' +
+                '                                        <input type="radio" class="custom-control-input" id="defaultInline1" name="inlineDefaultRadiosExample">\n' +
+                '                                        <label class="custom-control-label" for="defaultInline1">Nam</label>\n' +
+                '                                    </div>\n' +
+                '\n' +
+                '                                    <!-- Default inline 2-->\n' +
+                '                                    <div class="custom-control custom-radio custom-control-inline">\n' +
+                '                                        <input type="radio" class="custom-control-input" id="defaultInline2" name="inlineDefaultRadiosExample">\n' +
+                '                                        <label class="custom-control-label" for="defaultInline2">Nữ</label>\n' +
+                '                                    </div>\n' +
+                '\n' +
+                '                                    <!-- Default inline 3-->\n' +
+                '                                    <div class="custom-control custom-radio custom-control-inline">\n' +
+                '                                        <input type="radio" class="custom-control-input" id="defaultInline3" name="inlineDefaultRadiosExample">\n' +
+                '                                        <label class="custom-control-label" for="defaultInline3">Khác</label>\n' +
+                '                                    </div>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '\n' +
+                '                            <div class="row mb-3">\n' +
+                '                                <div class="col-5" style="color: #aaaaaa">Ngày sinh</div>\n' +
+                '                                <div class="col-2">\n' +
+                '                                    <select>\n' +
+                '                                        <option>5</option>\n' +
+                '                                    </select>\n' +
+                '                                </div>\n' +
+                '                                <div class="col-3">\n' +
+                '                                    <select>\n' +
+                '                                        <option>Tháng 10</option>\n' +
+                '                                    </select>\n' +
+                '                                </div>\n' +
+                '                                <div class="col-2">\n' +
+                '                                    <select>\n' +
+                '                                        <option>2001</option>\n' +
+                '                                    </select>\n' +
+                '                                </div>\n' +
+                '\n' +
+                '                            </div>\n' +
+                '\n' +
+                '                            <div class="row mb-3">\n' +
+                '                                <button class="btn btn-danger">\n' +
+                '                                    Lưu\n' +
+                '                                </button>\n' +
+                '                            </div>\n' +
+                '\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '\n' +
+                '                    <div class="col-5">\n' +
+                '                        <div class="p-2">\n' +
+                '                            <div class="" style="border-left: 1px solid #acacac">\n' +
+                '                                <div class="ml-2">\n' +
+                '                                    <img class="ml-5 mb-3" src="/images/unnamed.png" style="width: 104px; border-radius: 100%">\n' +
+                '                                    <input type="file" value="Chọn ảnh">\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </div>';
+
+            document.getElementById("divData").innerHTML = html;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // nút địa chỉ
+    const btnAddress = async () => {
+        try {
+            const result = await axios.get(`/getAddress?id_user=<%= id_user %>`);
+            const body = result.data;
+            let html = '';
+            html+='    <div class="row">\n' +
+                '        <div class="col-4"><h3>Địa chỉ của tôi</h3></div>\n' +
+                '        <div class="col-4"></div>\n' +
+                '        <div class="col-4">\n' +
+                '            <button class="btn btn-danger m-0" data-toggle="modal" data-target="#basicExampleModal"> ' +
+                'Thêm địa chỉ mới\n' +
+                '            </button>\n' +
+                '        </div>\n' +
+                '    </div>';
+            body.result_address.map((data) => {
+                html += '<div>\n' +
+                    '    <hr/>\n' +
+                    '    <div>\n' +
+                    '        <div class="row mb-3">\n' +
+                    '            <div class="col-4" style="color: #aaaaaa">\n' +
+                    '                Họ & tên\n' +
+                    '            </div>\n' +
+                    '            <div class="col-8">'+data.name_receiver+'\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <div class="row mb-3">\n' +
+                    '            <div class="col-4" style="color: #aaaaaa">\n' +
+                    '                Số điện thoại\n' +
+                    '            </div>\n' +
+                    '            <div class="col-8">'+data.number_receiver+'\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <div class="row mb-3">\n' +
+                    '            <div class="col-4" style="color: #aaaaaa">\n' +
+                    '                Địa chỉ\n' +
+                    '            </div>\n' +
+                    '            <div class="col-8">\n' +
+                    data.detail_address+
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '</div>';
+            })
+
+            document.getElementById("divData").innerHTML = html;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // nút đổi mật khẩu
+    const btnChangePassW = async () => {
+        try {
+
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+<!-- Modal -->
+<div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div>
+                    <h5>Thêm 1 địa chỉ mới</h5>
+                    <div class="md-form">
+                        <input placeholder="Họ & tên" type="text" id="name_receiver" class="form-control">
+                    </div>
+
+                    <div class="md-form">
+                        <input placeholder="Số điện thoại" type="text" id="numberPhoneReceiver"
+                               class="form-control">
+                    </div>
+                    <select type="button" class="browser-default custom-select mb-4" id="optionMatp"
+                            onclick="getMaqh()">
+                        <option selected disabled hidden>Tỉnh/Thành phố</option>
+                        <% result_province.map((data)=>{ %>
+                            <option value="<%= data.matp %>"><%= data.name %></option>
+                        <% }) %>
+                    </select>
+
+                    <select type="button" id="optionMaqh" class="browser-default custom-select mb-4"
+                            onclick="getMapx()">
+                        <option selected disabled hidden>Quận/Huyện</option>
+                    </select>
+
+                    <select class="browser-default custom-select" id="optionMapx">
+                        <option selected disabled hidden>Phường/Xã</option>
+                    </select>
+
+                    <div class="md-form">
+                        <input placeholder="Địa chỉ" type="text" id="detailAddress" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-" data-dismiss="modal">Thoát</button>
+                <button type="button" onclick="addAddress()" class="btn btn-danger">Thêm địa chỉ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--hiển thị tên quận/huyện, phường/xã-->
+<script>
+    const getMaqh = async () => {
+        try {
+            const matp = document.getElementById("optionMatp").value;
+            const result = await axios.get(`/getDataProvince?matp=${matp}`);
+            const body = result.data;
+
+            let html = '';
+            html += '<option selected disabled hidden>Quận/Huyện</option>\n';
+            document.getElementById("optionMaqh").innerHTML = html;
+            body.result_district.map((data) => {
+
+                let node = document.createElement("option");
+                node.setAttribute('value', data.maqh);
+                node.textContent = data.name;
+
+                // html += '<option id="'+data.maqh+'" value="'+data.maqh+'">'+data.name+'\n' +
+                //     '</option>';
+                document.getElementById("optionMaqh").appendChild(node);
+
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const getMapx = async () => {
+        try {
+            const maqh = document.getElementById("optionMaqh").value;
+            const result = await axios.get(`/getDataProvince?maqh=${maqh}`);
+            const body = result.data;
+
+            let html1 = '';
+            html1 += '<option selected disabled hidden>Phường/Xã</option>\n';
+            document.getElementById("optionMapx").innerHTML = html1;
+            body.result_ward.map((data) => {
+                let node = document.createElement("option");
+                node.setAttribute('value', data.xaid);
+                node.textContent = data.name;
+
+                // html += '<option id="'+data.maqh+'" value="'+data.maqh+'">'+data.name+'\n' +
+                //     '</option>';
+                document.getElementById("optionMapx").appendChild(node);
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<script>
+    const addAddress = async () => {
+        try {
+            const name_receiver = document.getElementById("name_receiver").value;
+            const number_phone_receiver = document.getElementById("numberPhoneReceiver").value;
+            const optionMatp = document.getElementById("optionMatp").value;
+            const optionMaqh = document.getElementById("optionMaqh").value;
+            const optionMapx = document.getElementById("optionMapx").value;
+            const detail_address = document.getElementById("detailAddress").value;
+
+            const formData = new FormData();
+            formData.append("name_receiver", name_receiver);
+            formData.append("number_phone_receiver", number_phone_receiver);
+            formData.append("optionMatp", optionMatp);
+            formData.append("optionMaqh", optionMaqh);
+            formData.append("optionMapx", optionMapx);
+            formData.append("detail_address", detail_address);
+
+            const result = axios.post(`/addAddress?id_user=<%= id_user %>`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            const body = result.data;
+                window.open(`/user/profile_user?id_user=<%= id_user %>`, `_self`);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+</script>
+</body>
+</html>

@@ -9,7 +9,10 @@ var indexRouter = require('./routes/index_routes');
 
 var app = express();
 
+// database: db_web_nang_cao
 require('./db');
+// database: don_vi_hanh_chinh
+require('./db1');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

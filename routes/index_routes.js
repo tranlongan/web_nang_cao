@@ -14,8 +14,8 @@ router.post('/registerAccountUser', controller.registerAccountUser);
 // đăng nhập - của bên user
 router.post('/loginAccountUser', controller.loginAccountUser);
 
-// xem chi tiết sản phẩm để đặt hàng - của bên user
-router.get('/user/detailProduct_User', controller.detailProduct_User);
+// hồ sơ của user
+router.get('/user/profile_user', controller.profile_user);
 
 // tìm kiếm sản phẩm theo tên sản phẩm hoặc tên danh mục
 router.post('/searchProduct', controller.searchProduct);
@@ -56,6 +56,18 @@ router.post('/pagination', controller.pagination);
 
 // thêm số sản phẩm mà user muốn hiển thị vào cookie
 router.post('/insertNumberPageToCookie', controller.insertNumberPageToCookie);
+
+// xem chi tiết sản phẩm để đặt hàng - của bên user
+router.get('/user/detailProduct_User', controller.detailProduct_User);
+
+// lấy dữ liệu các tỉnh thành
+router.get('/getDataProvince', controller.getDataProvince);
+
+// thêm địa chỉ gia hàng
+router.post('/addAddress', controller.addAddress);
+
+// load danh sách các địa chỉ
+router.get('/getAddress', controller.getAddress);
 
 // ****************************************************************************
 // load home của admin

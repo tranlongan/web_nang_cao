@@ -1,8 +1,12 @@
+// database: db_web_nang_cao
 const connection = require('../db');
+// database: don_vi_hanh_chinh
+const connection1 = require('../db1');
 const multer = require('multer');
 const path = require('path');
 const util = require('util');
 const query = util.promisify(connection.query).bind(connection);
+const query1 = util.promisify(connection1.query).bind(connection1);
 
 // *******************************************************************************
 // set up cho việc upload ảnh
@@ -90,10 +94,6 @@ const loginAccountUser = (req, res) => {
 
 // load home của user
 const homeUser = async (req, res) => {
-    const data_of_number_page_cookie = req.cookies.number_page;
-    const number_limit_of_cookie = data_of_number_page_cookie.numberPage;
-    const number_id_user_of_cookie = data_of_number_page_cookie.idUser;
-
     const number_limit = 3;
     const id_user0 = req.query.id_user;
     const sql2 = `SELECT * FROM page`;
@@ -110,7 +110,8 @@ const homeUser = async (req, res) => {
             connection.query(sql0, (err, result_account) => {
                 // dùng để đếm số lượng sản phẩm
                 connection.query(sql3, (err, count_number_product) => {
-                    // if(id_user0 == number_id_user_of_cookie){
+                    // Nếu không tồn tại cookie number_page thì mặc định sẽ là hiển thị 3 sản phẩm
+                    if (req.cookies.number_page == undefined) {
                         const milestones = Math.ceil(((count_number_product.length) / number_limit));
                         const sql4 = `SELECT * FROM page LIMIT ${milestones}`;
                         if (milestones <= parseInt(count_page.length)) {
@@ -130,13 +131,38 @@ const homeUser = async (req, res) => {
                         } else {
                             console.log('Ko đủ chỗ trống');
                         }
-                    // }
+                    }
+                    // Trường hợp đã tồn tại cookie number_page
+                    if (req.cookies.number_page != undefined) {
+                        const data_of_number_page_cookie = req.cookies.number_page;
+                        const number_limit_of_cookie = data_of_number_page_cookie.numberPage;
+                        const sql5 = `SELECT * FROM san_pham LIMIT ${number_limit_of_cookie}`;
+
+                        const milestones = Math.ceil(((count_number_product.length) / number_limit_of_cookie));
+                        const sql4 = `SELECT * FROM page LIMIT ${milestones}`;
+                        if (milestones <= parseInt(count_page.length)) {
+                            // dùng để in ra số trang vừa đủ
+                            connection.query(sql4, (err, pages) => {
+                                // dùng để in ra 4 sản phẩm đầu tiên, tương tự như page 1
+                                connection.query(sql5, (err, result_4_product) => {
+                                    res.render('user/homeUser', {
+                                        pages,
+                                        result: result_category,
+                                        result1: result_4_product,
+                                        id_user0,
+                                        result_account
+                                    });
+                                })
+                            })
+                        } else {
+                            console.log('Ko đủ chỗ trống');
+                        }
+                    }
                 })
             })
         });
     })
-
-    console.log(number_id_user_of_cookie);
+    console.log(req.cookies.number_page)
 }
 
 // xem chi tiết sản phẩm để đặt mua
@@ -383,16 +409,30 @@ const getReplyComment = async (req, res) => {
 const pagination = async (req, res) => {
     const {page = 1, limit = 3, id_user} = req.query;
     try {
-        const sanpham = await query(`SELECT * FROM san_pham LIMIT ${limit} OFFSET ${(page - 1) * limit}`);
-        const count = (await query(`SELECT COUNT(*) as numberSp FROM san_pham`))[0].numberSp;
+        if (req.cookies.number_page == undefined) {
+            const sanpham = await query(`SELECT * FROM san_pham LIMIT ${limit} OFFSET ${(page - 1) * limit}`);
+            const count = (await query(`SELECT COUNT(*) as numberSp FROM san_pham`))[0].numberSp;
 
-        res.json({
-            id_user,
-            sanpham,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page * 1,
-        })
+            res.json({
+                id_user,
+                sanpham,
+                totalPages: Math.ceil(count / limit),
+                currentPage: page * 1,
+            })
+        }
+        if (req.cookies.number_page != undefined) {
+            const data_of_number_page_cookie = req.cookies.number_page;
+            const number_limit_of_cookie = data_of_number_page_cookie.numberPage;
+            const sanpham = await query(`SELECT * FROM san_pham LIMIT ${number_limit_of_cookie} OFFSET ${(page - 1) * number_limit_of_cookie}`);
+            const count = (await query(`SELECT COUNT(*) as numberSp FROM san_pham`))[0].numberSp;
 
+            res.json({
+                id_user,
+                sanpham,
+                totalPages: Math.ceil(count / number_limit_of_cookie),
+                currentPage: page * 1,
+            })
+        }
     } catch (error) {
         res.json({
             error
@@ -400,8 +440,8 @@ const pagination = async (req, res) => {
     }
 }
 
+// thêm số sản phẩm hiển thị vào cookie
 const insertNumberPageToCookie = (req, res) => {
-
     const {data_select_number_page} = req.body;
     const id_user = req.query.id_user;
     let number_page = {
@@ -488,6 +528,58 @@ const searchProductByMoney = async (req, res) => {
         } catch (e) {
             console.log(e);
         }
+    })
+}
+
+// load phần profile của user
+const profile_user = async (req, res) => {
+    try {
+        const {id_user} = req.query;
+        const result_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
+        const result_province = await query1(`SELECT * FROM devvn_tinhthanhpho`);
+
+        await res.render('user/profile_user', {id_user, result_account, result_province});
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+// lấy dữ liệu các tỉnh thành
+const getDataProvince = async (req, res) => {
+    try {
+        const {matp, maqh} = req.query;
+        const result_district = await query1(`SELECT * FROM devvn_quanhuyen WHERE matp = '${matp}'`);
+        const result_ward = await query1(`SELECT * FROM devvn_xaphuongthitran WHERE maqh = '${maqh}'`);
+
+        res.json({
+            result_district,
+            result_ward
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+// thêm đại chỉ giao hàng
+const addAddress = async (req, res) => {
+    upload(req, res, async () => {
+        const {id_user} = req.query;
+        const {name_receiver, number_phone_receiver, optionMatp, optionMaqh, optionMapx, detail_address} = req.body;
+
+        const result_city = await query1(`SELECT name FROM devvn_tinhthanhpho WHERE matp = '${optionMatp}'`)
+        const result_district = await query1(`SELECT name FROM devvn_quanhuyen WHERE maqh = '${optionMaqh}'`);
+        const result_ward = await query1(`SELECT name FROM devvn_xaphuongthitran WHERE xaid = '${optionMapx}'`);
+
+        const insertAddress = await query(`INSERT INTO address (id, id_of_user, name_receiver, number_receiver, city_receiver, district_receiver, ward_receiver, detail_address) VALUES (null , '${id_user}', '${name_receiver}', '${number_phone_receiver}', '${result_city[0].name}', '${result_district[0].name}', '${result_ward[0].name}','${detail_address}')`);
+    })
+}
+
+// lấy danh sách địa chỉ
+const getAddress = async (req, res) => {
+    const {id_user} = req.query;
+    const result_address = await query(`SELECT * FROM address WHERE id_of_user = '${id_user}'`);
+    res.json({
+        result_address
     })
 }
 
@@ -739,10 +831,10 @@ const loadLogin = (req, res) => {
 
 
 module.exports = {
-    loadLogin, loadCategoryAndHome, homeUser, pageCart,
+    loadLogin, loadCategoryAndHome, homeUser, pageCart, profile_user, getDataProvince,
     addCategory, addProduct, addCart, addComment, deleteProductFromCart, deleteProduct, addReplyComment,
     viewAllProduct, viewDetailProduct, viewProductByCategory_user, viewProductByCategory, viewAllCategory,
     editProduct, searchProduct, sumCost, toPay, pay, getReplyComment, editCategory, deleteCategory,
     registerAccountUser, loginAccountUser, searchProductByMoney, getNameCategory, insertNumberPageToCookie,
-    detailProduct_User, pagination
+    detailProduct_User, pagination, addAddress, getAddress
 }

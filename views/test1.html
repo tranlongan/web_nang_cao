@@ -1,18 +1,3 @@
-const submitReply = async (id_of_product, id_of_comment) => {
-try {
-const text_area_reply = document.getElementById("text_area_reply").value;
-const formData = new FormData();
-formData.append("text_area_reply", text_area_reply);
-const result = axios.post(`/addReplyComment?id_user=<%= id_geted0 %>&id_product=${id_of_product}&id_comment=${id_of_comment}`, formData, {
-headers: {
-'Content-Type': 'multipart/form-data'
-}
-});
-const body = result.data;
-if (body.msg === 'ok') {
-window.open(`/user/detailProduct_User?id_user=<%= id_geted0 %>&id_product=${id_of_product}`, `_self`);
-}
-} catch (e) {
-console.error(e);
-}
-}
+<option id="  data.maqh  " value="  data.maqh  ">
+    data.name
+</option>
