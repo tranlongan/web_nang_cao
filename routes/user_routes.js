@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/index_controllers');
+const controller = require('../controllers/user_controllers');
 /* GET home page. */
 // router.get('/', (req, res) => res.render('index'));
 
@@ -38,12 +38,6 @@ router.get('/user/pageCart', controller.pageCart);
 //Tính tổng số tiền trong giỏ hàng
 router.get('/sumCost', controller.sumCost);
 
-// thanh toán
-router.get('/user/toPay', controller.toPay);
-
-// trang thanh toán
-router.get('/user/pay', controller.pay);
-
 // bình luận trong bài viết chi tiết
 router.post('/addComment', controller.addComment);
 
@@ -69,39 +63,26 @@ router.post('/addAddress', controller.addAddress);
 // load danh sách các địa chỉ
 router.get('/getAddress', controller.getAddress);
 
-// ****************************************************************************
-// load home của admin
-router.get('/admin/loadCategoryAndHome', controller.loadCategoryAndHome);
+router.get('/getProductFromCart', controller.getProductFromCart);
 
-// thêm danh mục - của bên admin
-router.post('/addCategory', controller.addCategory);
+// xác nhận mua
+router.get('/user/pageProductFromCart', controller.pageProductConfirm);
 
-// thêm sản phẩm - của bên admin
-router.post('/addProduct', controller.addProduct);
+// trang thanh toán
+router.get('/user/pageTrackOder', controller.pageTrackOder);
 
-// xem tổng quan các sản phẩm - của bên admin
-router.get('/admin/viewAllProduct', controller.viewAllProduct);
+// thay đổi số lượng sản phẩm trong giỏ hàng
+router.post('/updateNumbersProduct', controller.updateNumbersProduct);
 
-// xem chi tiết để chỉnh sửa sản phẩm - của bên admin
-router.get('/admin/viewDetailProduct', controller.viewDetailProduct);
+// chọn địa chỉ mặc định
+router.get('/chooseAddress', controller.chooseAddress);
 
-// giống với phương thức trên
-router.post('/editProduct', controller.editProduct);
+// sử dụng json
+router.get('/useJson', controller.useJson);
 
-// xem tổng quan danh mục
-router.get('/admin/viewAllCategory', controller.viewAllCategory);
+// trang địa chỉ
+router.get('/user/pageAddress', controller.pageAddress);
+// ********************************************************************************************************************
 
-// get name category
-router.get('/getNameCategory', controller.getNameCategory);
-// sửa danh mục
-router.post('/editCategory', controller.editCategory);
-// xóa danh mục
-router.get('/deleteCategory', controller.deleteCategory);
-
-// tìm kiếm sản phẩm theo danh mục
-router.get('/viewProductByCategory', controller.viewProductByCategory);
-
-// xóa sản phẩm
-router.get('/deleteProduct', controller.deleteProduct);
 
 module.exports = router;

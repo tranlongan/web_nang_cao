@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ADDRESS</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+
+<%- include('path_div/navBarHome.ejs') %>
+
+<!-- Bắt đầu code-->
+<div style="background-color: gainsboro">
+    <div class="container" style="background-color: white">
+        <div class="row">
+            <div class="col-3 pt-2 pb-2" style="background-color: gainsboro">
+                <!--                phần hiển thị tên user-->
+                <div class="row ml-4">
+                    <div class="mr-3">
+                        <img src="/images/unnamed.png" style="width: 48px; border-radius: 100%">
+                    </div>
+                    <div>
+                        Name_user
+                        <div style="color: burlywood">
+                            <i class="fas fa-pen"></i><span>Chỉnh hồ sơ</span>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row ml-4" type="button">
+                    <div class="mr-3">
+                        <img src="/images/unnamed.png" style="width: 24px; border-radius: 100%">
+                    </div>
+                    <div>
+                        Tài khoản của tôi
+                    </div>
+                </div>
+
+                <div>
+                    <div>
+                        <div class="mt-3">
+                            <nav class="nav flex-column lighten-4 pl-3 ml-5">
+                                <li class="nav-item mb-1" type="button" onclick="btnFile()">
+                                    Hồ sơ
+                                </li>
+                                <li class="nav-item mb-1" type="button" onclick="btnAddress()">
+                                    Địa chỉ
+                                </li>
+                                <li class="nav-item mb-1" type="button">
+                                    Trạng thái đơn hàng
+                                </li>
+                                <li class="nav-item mb-1" type="button" onclick="btnChangePassW()">
+                                    Đổi mật khẩu
+                                </li>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-9" id="divData">
+                <div class="row">
+                    <div class="col-4"><h3>Địa chỉ của tôi</h3></div>
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <button class="btn btn-danger m-0" data-toggle="modal" data-target="#basicExampleModal">
+                            Thêm địa chỉ mới
+                        </button>
+                    </div>
+                </div>
+                <div id="divBiggest">
+                    <% result_address.map((data_address)=>{ %>
+                        <hr/>
+                        <div>
+                            <div class="row mb-3">
+                                <div class="col-3" style="color: #aaaaaa">
+                                    Họ & tên
+                                </div>
+                                <div class="col-6"><%= data_address.name_receiver %><span
+                                            id="divChooseAddress<%= data_address.id %>"></span></div>
+                                <div class="col-3">
+                                    <div class="float-right"><u class="ml-3">Sửa</u> <u class="ml-3">Xóa</u></div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-3" style="color: #aaaaaa">
+                                    Số điện thoại
+                                </div>
+                                <div class="col-6"><%= data_address.number_receiver %></div>
+                                <div class="col-3">
+                                    <button id="btnSetDefault<%= data_address.id%>" type="button" onclick="btnChooseAdress(<%= data_address.id %>)"
+                                            class="form-control">
+                                        Thiết lập mặc định
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-3" style="color: #aaaaaa">
+                                    Địa chỉ
+                                </div>
+                                <div class="col-6"><%= data_address.detail_address %></div>
+                            </div>
+                        </div>
+                    <% }) %>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- Kết thúc code-->
+
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+<!--phần nút hồ sơ, địa chỉ, đổi mật khẩu-->
+<script>
+    // nút hồ sơ
+    const btnFile = async () => {
+        try {
+            window.open(`/user/profile_user?id_user=<%= id_user %>`, `_self`);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // nút địa chỉ
+    const btnAddress = async () => {
+        window.open(`/user/pageAddress?id_user=<%= id_user %>`, `_self`);
+    }
+
+    // nút đổi mật khẩu
+    const btnChangePassW = async () => {
+        try {
+
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div>
+                    <h5>Thêm 1 địa chỉ mới</h5>
+                    <div class="md-form">
+                        <input placeholder="Họ & tên" type="text" id="name_receiver" class="form-control">
+                    </div>
+
+                    <div class="md-form">
+                        <input placeholder="Số điện thoại" type="text" id="numberPhoneReceiver"
+                               class="form-control">
+                    </div>
+                    <select type="button" class="browser-default custom-select mb-4" id="optionMatp"
+                            onclick="getMaqh()">
+                        <option selected disabled hidden>Tỉnh/Thành phố</option>
+                        <% result_province.map((data)=>{ %>
+                            <option value="<%= data.matp %>"><%= data.name %></option>
+                        <% }) %>
+                    </select>
+
+                    <select type="button" id="optionMaqh" class="browser-default custom-select mb-4"
+                            onclick="getMapx()">
+                        <option selected disabled hidden>Quận/Huyện</option>
+                    </select>
+
+                    <select class="browser-default custom-select" id="optionMapx">
+                        <option selected disabled hidden>Phường/Xã</option>
+                    </select>
+
+                    <div class="md-form">
+                        <input placeholder="Địa chỉ" type="text" id="detailAddress" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-" data-dismiss="modal">Thoát</button>
+                <button type="button" onclick="addAddress()" class="btn btn-danger">Thêm địa chỉ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--hiển thị tên quận/huyện, phường/xã-->
+<script>
+    const getMaqh = async () => {
+        try {
+            const matp = document.getElementById("optionMatp").value;
+            const result = await axios.get(`/getDataProvince?matp=${matp}`);
+            const body = result.data;
+
+            let html = '';
+            html += '<option selected disabled hidden>Quận/Huyện</option>\n';
+            document.getElementById("optionMaqh").innerHTML = html;
+            body.result_district.map((data) => {
+
+                let node = document.createElement("option");
+                node.setAttribute('value', data.maqh);
+                node.textContent = data.name;
+
+                // html += '<option id="'+data.maqh+'" value="'+data.maqh+'">'+data.name+'\n' +
+                //     '</option>';
+                document.getElementById("optionMaqh").appendChild(node);
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const getMapx = async () => {
+        try {
+            const maqh = document.getElementById("optionMaqh").value;
+            const result = await axios.get(`/getDataProvince?maqh=${maqh}`);
+            const body = result.data;
+
+            let html1 = '';
+            html1 += '<option selected disabled hidden>Phường/Xã</option>\n';
+            document.getElementById("optionMapx").innerHTML = html1;
+            body.result_ward.map((data) => {
+                let node = document.createElement("option");
+                node.setAttribute('value', data.xaid);
+                node.textContent = data.name;
+
+                // html += '<option id="'+data.maqh+'" value="'+data.maqh+'">'+data.name+'\n' +
+                //     '</option>';
+                document.getElementById("optionMapx").appendChild(node);
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+
+<!--phần nút địa chỉ-->
+<script>
+    // thêm địa chỉ
+    const addAddress = async () => {
+        try {
+            const name_receiver = document.getElementById("name_receiver").value;
+            const number_phone_receiver = document.getElementById("numberPhoneReceiver").value;
+            const optionMatp = document.getElementById("optionMatp").value;
+            const optionMaqh = document.getElementById("optionMaqh").value;
+            const optionMapx = document.getElementById("optionMapx").value;
+            const detail_address = document.getElementById("detailAddress").value;
+
+            const formData = new FormData();
+            formData.append("name_receiver", name_receiver);
+            formData.append("number_phone_receiver", number_phone_receiver);
+            formData.append("optionMatp", optionMatp);
+            formData.append("optionMaqh", optionMaqh);
+            formData.append("optionMapx", optionMapx);
+            formData.append("detail_address", detail_address);
+
+            const result = axios.post(`/addAddress?id_user=<%= id_user %>`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            const body = result.data;
+            window.open(`/user/profile_user?id_user=<%= id_user %>`, `_self`);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const btnChooseAdress = async (id_address) => {
+        try {
+            const result = await axios.get(`/chooseAddress?id_user=<%= id_user %>&id_address=${id_address}`);
+            const body = result.data;
+            if (body.msg === 'ok') {
+                window.open(`/user/pageAddress?id_user=<%= id_user %>`, `_self`);
+            }
+            if(body.msg === 'ok1'){
+                window.open(`/user/pageAddress?id_user=<%= id_user %>`, `_self`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    (async () => {
+        try {
+            const result = await axios.get(`/useJson?id_user=<%= id_user %>`);
+            const body = result.data;
+            let html ='';
+            html+='<font class="ml-5 bg-success p-2">Mặc định</font>'
+
+            body.result_address.forEach((data)=>{
+                document.getElementById("divChooseAddress"+data.id).innerHTML = html;
+                document.getElementById("btnSetDefault"+data.id).disabled = "true";
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    })()
+</script>
+
+
+</body>
+</html>

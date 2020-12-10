@@ -18,8 +18,8 @@
 <div class="container-fluid">
     <div class="mb-4">
         <!--        nút home-->
-        <a class="navbar-brand" href="/admin/loadCategoryAndHome">Trang chủ</a>
-        <a class="navbar-brand" href="/admin/viewAllCategory">Quay lại</a>
+        <a class="navbar-brand" href="/admin/loadCategoryAndHome?id_user=<%= id_admin%>">Trang chủ</a>
+        <a class="navbar-brand" href="/admin/viewAllProduct?id_admin=<%= id_admin%>">Quay lại</a>
     </div>
 
     <div id="divData">
@@ -97,7 +97,7 @@
             }
             if (body.msg === 'ok') {
                 alert('Chỉnh sửa thành công');
-                window.open(`/admin/viewAllCategory`, `_self`);
+                window.open(`/admin/viewAllCategory?id_user=<%= id_admin %>`, `_self`);
             }
         } catch (e) {
             console.error(e);

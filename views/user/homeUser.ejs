@@ -16,16 +16,8 @@
 </head>
 
 <body>
-<!--    row 1-->
-<div>
-    <!--        nút home-->
-    <a class="navbar-brand" href="/homeUser?id_user=<%= id_user0 %>">Trang chủ</a>
-    <div class="float-right">
-        <div class="navbar-brand">Xin chào <span style="font-weight: bolder"><a href="/user/profile_user?id_user=<%= id_user0 %>"><%= result_account[0].name_user %></a></span>
-        </div>
-        <a class="navbar-brand" href="/">Đăng xuất</a>
-    </div>
-</div>
+
+<%- include('path_div/navBarHome.ejs') %>
 <!-- Bắt đầu code-->
 <div class="container-fluid">
     <div id="data_viewAllProduct">
@@ -37,25 +29,25 @@
                 </a>
             </li>
             <li class="nav-item mr-4">
-                <a style="color: #444444" href="/user/pageCart?id_user=<%= id_user0 %>">
+                <a style="color: #444444" href="/user/pageCart?id_user=<%= id_user %>">
                     <i class="fas fa-shopping-cart fa-2x"></i>
                     <font style="font-size: 19px; font-weight: bolder">Giỏ hàng</font>
                 </a>
             </li>
-            <li class="nav-item mr-4 mt-2">
-                <a style="color: #444444" href="/user/pay?id_user=<%= id_user0 %>">
-                    <font style="font-size: 19px">Thanh toán</font>
-                </a>
-            </li>
             <li class="nav-item mr-5 mt-2">
-                <a style="color: #444444" type="button" onclick="chooseNumberPageToDisplay(<%= id_user0 %>)">
+                <a style="color: #444444" type="button" onclick="chooseNumberPageToDisplay(<%= id_user %>)">
                     <font style="font-size: 19px">Tùy chỉnh số sp hiển thị</font>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mr-5">
                 <!-- Default input -->
                 <input style="width: 350px" type="text" id="data_input_search" class="form-control"
                        onkeypress="searchProductEnter(event)" placeholder="Tìm kiếm sản phẩm, danh mục,....">
+            </li>
+            <li class="nav-item mr-4 mt-2">
+                <a style="color: #444444" href="/user/pageTrackOder?id_user=<%= id_user %>">
+                    <font style="font-size: 19px"><i class="fas fa-box"></i> Theo dõi đơn hàng</font>
+                </a>
             </li>
         </ul>
 
@@ -89,7 +81,7 @@
                                     <div class="view overlay">
                                         <img class="card-img-top" style="height: 348px" src="<%= row1.link_image %>"
                                              alt="Card image cap">
-                                        <a href="/user/detailProduct_User?id_user=<%= id_user0 %>&id_product=<%= row1.id %>">
+                                        <a href="/user/detailProduct_User?id_user=<%= id_user %>&id_product=<%= row1.id %>">
                                             <div class="mask rgba-white-slight"></div>
                                         </a>
                                     </div>
@@ -166,7 +158,7 @@
         if (e.keyCode === 13) {
             const data_input_search = document.getElementById("data_input_search").value;
             try {
-                const result = await axios.post(`/searchProduct?id_user=<%= id_user0 %>`, {data_input_search});
+                const result = await axios.post(`/searchProduct?id_user=<%= id_user %>`, {data_input_search});
                 const body = result.data;
                 const id_user = body.id_user;
                 let html = '', html1 = '';
@@ -229,13 +221,13 @@
 <script>
     const btnPage = async (valueBtnPage) => {
         try {
-            const result = await axios.post(`/pagination?id_user=${<%= id_user0 %>}&page=${valueBtnPage.value}`);
+            const result = await axios.post(`/pagination?id_user=${<%= id_user %>}&page=${valueBtnPage.value}`);
             const body = result.data;
             console.log(body)
             const id_user1 = body.id_user;
             let html = '';
             if (body.msg === 'reset page 1') {
-                window.open(`/homeUser?id_user=${<%= id_user0 %>}&page=${valueBtnPage.value}`, `_self`);
+                window.open(`/homeUser?id_user=${<%= id_user %>}&page=${valueBtnPage.value}`, `_self`);
             } else {
                 body.sanpham.forEach((data) => {
                     html += '<div class="col mb-3"> \n' +
@@ -281,7 +273,7 @@
 <script>
     const viewAllProductByCategory = async (id) => {
         try {
-            const result = await axios.get(`/viewProductByCategory_user?id_user=<%= id_user0 %>&id_category=${id}`);
+            const result = await axios.get(`/viewProductByCategory_user?id_user=<%= id_user %>&id_category=${id}`);
             console.log(result.data.result_of_search_by_category);
             const body = result.data;
             const id_user = body.id_user;
@@ -349,7 +341,7 @@
             const formData = new FormData();
             formData.append("headMoney", headMoney);
             formData.append("tailMoney", tailMoney);
-            const result = await axios.post(`/searchProductByMoney?id_user=<%= id_user0 %>&id_category=${id}`, formData, {
+            const result = await axios.post(`/searchProductByMoney?id_user=<%= id_user %>&id_category=${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

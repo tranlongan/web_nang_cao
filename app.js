@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require('body-parser');
 
-var indexRouter = require('./routes/index_routes');
+var indexRouter = require('./routes/user_routes');
+var indexRouter1 = require('./routes/admin_routes');
 
 var app = express();
 
@@ -28,6 +29,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.listen(3001, () => console.log('Alo port 3001'));
 
 app.use('/', indexRouter);
+app.use('/', indexRouter1);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

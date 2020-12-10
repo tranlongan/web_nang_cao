@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phần cho user - Giỏ hàng</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+
+<%- include('path_div/navBarHome.ejs') %>
+<!-- Bắt đầu code-->
+<div class="container-fluid pb-2">
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">Mã sản phẩm</th>
+                <th scope="col">Ngày mua</th>
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Tổng tiền</th>
+                <th scope="col">Trạng thái đơn hàng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% result_productConfirm.map((data_productConfirm)=>{ %>
+                <tr>
+                    <th scope="row"><a style="color: #4d84e2"
+                                href="/user/detailProduct_User?id_user=<%= id_user %>&id_product=<%= data_productConfirm.id_of_product %>"><%= data_productConfirm.id_of_product %></a>
+                    </th>
+                    <td><%= data_productConfirm.date_confirm %></td>
+                    <td><%= data_productConfirm.name_product %></td>
+                    <td><%= Intl.NumberFormat().format(data_productConfirm.cost) %> VNĐ</td>
+                    <td><%= data_productConfirm.status_order%></td>
+                </tr>
+
+            <% }) %>
+            <tr>
+                <th class="h5">Tổng tiền</th>
+                <td colspan="4" class="h6"><%= Intl.NumberFormat().format(totalMoney)%> VNĐ</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<!-- Kết thúc code-->
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+</html>

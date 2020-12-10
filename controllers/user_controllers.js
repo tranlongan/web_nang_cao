@@ -8,7 +8,7 @@ const util = require('util');
 const query = util.promisify(connection.query).bind(connection);
 const query1 = util.promisify(connection1.query).bind(connection1);
 
-// *******************************************************************************
+// ********************************************************************************************************************
 // set up cho việc upload ảnh
 // cho biết toàn bộ thông tin về file ảnh
 const storage = multer.diskStorage({
@@ -38,8 +38,12 @@ function checkFileType(file, cb) {
     }
 };
 // Kết thúc phần set up ảnh
-// *******************************************************************************
+// ********************************************************************************************************************
 // phần cho user
+//Load phần đăng nhập, đăng ký
+const loadLogin = (req, res) => {
+    res.render('login_user');
+}
 // Đăng ký tài khoản user
 const registerAccountUser = (req, res) => {
     upload(req, res, (err) => {
@@ -95,10 +99,10 @@ const loginAccountUser = (req, res) => {
 // load home của user
 const homeUser = async (req, res) => {
     const number_limit = 3;
-    const id_user0 = req.query.id_user;
+    const id_user = req.query.id_user;
     const sql2 = `SELECT * FROM page`;
     const sql = `SELECT * FROM danh_muc`;
-    const sql0 = `SELECT * FROM account_user WHERE id = '${id_user0}'`;
+    const sql0 = `SELECT * FROM account_user WHERE id = '${id_user}'`;
     const sql3 = `SELECT * FROM san_pham `;
     const sql1 = `SELECT * FROM san_pham LIMIT ${number_limit}`;
 
@@ -123,7 +127,7 @@ const homeUser = async (req, res) => {
                                         pages,
                                         result: result_category,
                                         result1: result_4_product,
-                                        id_user0,
+                                        id_user,
                                         result_account
                                     });
                                 })
@@ -149,7 +153,7 @@ const homeUser = async (req, res) => {
                                         pages,
                                         result: result_category,
                                         result1: result_4_product,
-                                        id_user0,
+                                        id_user,
                                         result_account
                                     });
                                 })
@@ -167,12 +171,12 @@ const homeUser = async (req, res) => {
 
 // xem chi tiết sản phẩm để đặt mua
 const detailProduct_User = (req, res) => {
-    let id_geted0 = req.query.id_user;
+    let id_user = req.query.id_user;
     let id_geted = req.query.id_product;
-    const sql0 = `SELECT * FROM account_user WHERE id = '${id_geted0}'`;
+    const sql0 = `SELECT * FROM account_user WHERE id = '${id_user}'`;
     const sql = `SELECT * FROM san_pham WHERE id = '${id_geted}'`;
     const sql1 = `SELECT * FROM comment WHERE id_of_product = '${id_geted}'`;
-    const sql2 = `SELECT * FROM comment WHERE id_of_user = '${id_geted0}'`;
+    const sql2 = `SELECT * FROM comment WHERE id_of_user = '${id_user}'`;
     // const sql3 = `SELECT * FROM reply_comment WHERE id_of_comment = ${}`
 
     connection.query(sql0, (err, result_account) => {
@@ -181,7 +185,7 @@ const detailProduct_User = (req, res) => {
                 connection.query(sql2, (err, result_id_comment) => {
                     res.render('user/detailProduct_User', {
                         result,
-                        id_geted0,
+                        id_user,
                         result_account,
                         result_comment,
                         result_id_comment,
@@ -198,6 +202,14 @@ const addCart = (req, res) => {
         if (err) {
             throw err
         } else {
+            let date_ob = new Date();
+            let date = ("0" + date_ob.getDate()).slice(-2);
+            // current month
+            let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+            // current year
+            let year = date_ob.getFullYear();
+            let timeFull = "Ngày " + date + " tháng " + month + ", " + year;
+
             const id_user = req.query.id_user;
             const id_product = req.query.id_product;
             const {numbers} = req.body;
@@ -209,7 +221,7 @@ const addCart = (req, res) => {
                 const sql1 = `SELECT 1 AS b FROM cart WHERE id_of_product = '${id_product}'`;
                 const sql_00 = `SELECT * FROM cart WHERE id_of_product = '${id_product}'`
 
-                const sql = `INSERT INTO cart (id, id_of_user, id_of_product, numbers, link_image, name_product, cost) VALUES (null ,'${id_user}', '${id_product}', '${numbers}', '${link_image}','${name_product}','${cost}')`;
+                const sql = `INSERT INTO cart (id, id_of_user, id_of_product, numbers, link_image, name_product, cost, date_addCart) VALUES (null ,'${id_user}', '${id_product}', '${numbers}', '${link_image}','${name_product}','${cost}', '${timeFull}')`;
                 connection.query(sql_00, (err, result1) => {
                     connection.query(sql1, (err, result_check_product) => {
                         if (result_check_product[0] == undefined) {
@@ -254,16 +266,17 @@ const deleteProductFromCart = (req, res) => {
 }
 
 // trang xem giỏ hàng
-const pageCart = (req, res) => {
-    const id_geted = req.query.id_user;
-    const sql0 = `SELECT * FROM account_user WHERE id = '${id_geted}'`;
-    const sql = `SELECT * FROM cart WHERE id_of_user = '${id_geted}'`;
-    connection.query(sql0, (err, result_account) => {
-        connection.query(sql, (err, result_user_cart) => {
-            res.render('user/cart', {result_user_cart, id_geted, result_account});
-            // console.log(id_geted)
-        })
-    })
+const pageCart = async (req, res) => {
+    try {
+        const id_user = req.query.id_user;
+        const result_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
+        const result_user_cart = await query(`SELECT * FROM cart WHERE id_of_user = '${id_user}'`);
+        const result_address_default = await query(`SELECT * FROM address WHERE id_of_user = '${id_user}' AND chosen = '1'`);
+        res.render('user/cart', {result_user_cart, id_user, result_account, result_address_default});
+    } catch (e) {
+        console.log(e);
+    }
+
 }
 
 // tính tổng số tiền trong giỏ hàng
@@ -273,60 +286,6 @@ const sumCost = (req, res) => {
     connection.query(sql, (err, result_sum_cost) => {
         res.json({result_sum_cost});
     })
-}
-
-// thanh toán
-const toPay = async (req, res) => {
-    try {
-        const id_user = req.query.id_user;
-        const total_money = req.query.total_money;
-        const total_money1 = Intl.NumberFormat().format(total_money);
-        let date_ob = new Date();
-        let date = ("0" + date_ob.getDate()).slice(-2);
-        // current month
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-        // current year
-        let year = date_ob.getFullYear();
-        let timeFull = "Ngày " + date + " tháng " + month + ", " + year;
-
-        const result_name_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
-
-        const name_user = result_name_account[0].name_user;
-        const result_total_money = await query(`SELECT * FROM pay WHERE id_of_user = '${id_user}'`);
-        const check_pay = await query(`SELECT 1 AS c FROM pay WHERE id_of_user = '${id_user}'`);
-        if (check_pay[0] == undefined) {
-            if (total_money != 0) {
-                const add_to_the_invoice = await query(`INSERT INTO pay (id, id_of_user, name_user, total_amount, date_order) VALUES (null, '${id_user}', '${name_user}', '${total_money}', '${timeFull}')`);
-            } else {
-                console.log("Không cần lưu vào database");
-            }
-        } else {
-            if (check_pay[0].c == 1) {
-                let total_money_old = (result_total_money[0].total_amount) * 1;
-                let total_money_new = total_money_old + ((total_money) * 1);
-                const total_money_new1 = (total_money_new).toString();
-                const update_total_amount = await query(`UPDATE pay SET total_amount = '${total_money_new1}' WHERE id_of_user = '${id_user}'`);
-                // console.log(total_money1);
-            } else {
-                console.log('Không làm gì cả');
-            }
-        }
-        const delete_product_in_cart = await query(`DELETE FROM cart WHERE id_of_user = '${id_user}'`);
-        // res.send("<script type='text/javascript'>alert('Thêm danh mục thành công'); window.open('/', '_self');</script>");
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-// trang thanh toán
-const pay = async (req, res) => {
-    const id_user = req.query.id_user;
-    const result_name_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
-    const result_total_money = await query(`SELECT * FROM pay WHERE id_of_user = '${id_user}'`);
-    res.render('user/pay', {result_name_account, result_total_money, id_user});
-    // res.json({result_total_money});
-    console.log(result_total_money);
-
 }
 
 // tính năng bình luận
@@ -570,7 +529,7 @@ const addAddress = async (req, res) => {
         const result_district = await query1(`SELECT name FROM devvn_quanhuyen WHERE maqh = '${optionMaqh}'`);
         const result_ward = await query1(`SELECT name FROM devvn_xaphuongthitran WHERE xaid = '${optionMapx}'`);
 
-        const insertAddress = await query(`INSERT INTO address (id, id_of_user, name_receiver, number_receiver, city_receiver, district_receiver, ward_receiver, detail_address) VALUES (null , '${id_user}', '${name_receiver}', '${number_phone_receiver}', '${result_city[0].name}', '${result_district[0].name}', '${result_ward[0].name}','${detail_address}')`);
+        const insertAddress = await query(`INSERT INTO address (id, id_of_user, chosen, name_receiver, number_receiver, city_receiver, district_receiver, ward_receiver, detail_address) VALUES (null , '${id_user}', '0','${name_receiver}', '${number_phone_receiver}', '${result_city[0].name}', '${result_district[0].name}', '${result_ward[0].name}','${detail_address}')`);
     })
 }
 
@@ -583,258 +542,128 @@ const getAddress = async (req, res) => {
     })
 }
 
-// *********************************************************************************
+const getProductFromCart = async (req, res) => {
+    try {
 
+    } catch (e) {
+        console.error(e);
+    }
+}
 
-// load lại home , phần danh mục và phần sản phẩm
-const loadCategoryAndHome = (req, res, next) => {
-    const sql0 = `SELECT * FROM page`;
-    const sql = `SELECT * FROM danh_muc`;
-    const sql1 = `SELECT * FROM san_pham`;
-    const number_limit = 6;
-    // đếm số trang
-    connection.query(sql0, (err, result_page) => {
-        // danh mục
-        connection.query(sql, (err, result) => {
-            // tổng sản phẩm
-            connection.query(sql1, (err, result1) => {
-                let milestones = Math.ceil((result1.length) / number_limit);
-                if (milestones <= (result_page.length)) {
-                    const sql2 = `SELECT * FROM page LIMIT ${milestones}`;
-                    // số trang vừa đủ
-                    connection.query(sql2, (err, pages) => {
-                        const sql3 = `SELECT * FROM san_pham LIMIT ${number_limit}`;
-                        // in ra số sản phẩm limit
-                        connection.query(sql3, (err, result_limit) => {
-                            res.render('admin/index', {result, result_limit, pages});
-                            console.log(sql2);
-                        })
-                    })
-                } else {
-                    console.log('Bạn cần tạo thêm số trang để chứa');
-                }
-            })
+const pageProductConfirm = async (req, res) => {
+    try {
+        let date_ob = new Date();
+        let date = ("0" + date_ob.getDate()).slice(-2);
+        // current month
+        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        // current year
+        let year = date_ob.getFullYear();
+        let timeFull = "Ngày " + date + " tháng " + month + ", " + year;
+
+        const {id_user, id_address} = req.query;
+        const result_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
+        const result_productFromCart = await query(`SELECT * FROM cart WHERE id_of_user = '${id_user}'`);
+        const result_address = await query(`SELECT * FROM address WHERE id = '${id_address}'`);
+        const name_user = result_account[0].name_user;
+        const detail_address = result_address[0].detail_address;
+        let totalMoney = 0;
+        result_productFromCart.map(async (data) => {
+            const add_confirm = await query(`INSERT INTO confirm_product (id, id_of_user, id_of_product, id_of_address, numbers, name_product, cost, detail_address,date_confirm,status_order) VALUES (null, '${id_user}', '${data.id_of_product}', '${id_address}','${data.numbers}', '${data.name_product}', '${data.cost}', '${detail_address}','${timeFull}','Chờ xác nhận')`);
         })
-    })
-};
+        const delete_cart = await query(`DELETE FROM cart WHERE id_of_user = '${id_user}'`);
+        const result_productConfirm = await query(`SELECT * FROM confirm_product WHERE id_of_user = '${id_user}'`);
+        result_productConfirm.map((data) => {
+            totalMoney += parseFloat(data.cost) * parseFloat(data.numbers);
+        })
+        res.render('user/product_confirm', {result_productConfirm, result_account, id_user, totalMoney});
+    } catch (e) {
+        console.error(e);
+    }
+}
 
-// thêm danh mục
-const addCategory = (req, res, next) => {
-    const {name_category} = req.body;
-    const sql = `INSERT INTO danh_muc (id, name_category) VALUES (NULL, '${[name_category]}')`;
-    connection.query(sql, (err) => {
-        if (err) throw err
-        res.send("<script type='text/javascript'>alert('Thêm danh mục thành công'); window.open('/admin/loadCategoryAndHome', '_self');</script>");
+// trang thanh toán
+const pageTrackOder = async (req, res) => {
+    const id_user = req.query.id_user;
+    const result_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
+    const result_productConfirm = await query(`SELECT * FROM confirm_product WHERE id_of_user = '${id_user}'`);
+    let totalMoney = 0;
+    result_productConfirm.map((data) => {
+        totalMoney += parseFloat(data.cost) * parseFloat(data.numbers);
     })
-};
+    res.render('user/track_order', {result_account, result_productConfirm, id_user, totalMoney});
 
-// thêm sản phẩm
-const addProduct = (req, res) => {
-    upload(req, res, (err) => {
-        if (err) {
-            res.json({
-                msg: err
+}
+
+// cập nhật số lượng sản phẩm
+const updateNumbersProduct = async (req, res) => {
+    try {
+        const {id_product, id_cart} = req.query;
+        const {original} = req.body;
+        const updateNumbersProduct = await query(`UPDATE cart SET numbers = '${original}' WHERE id_of_product = '${id_product}'`);
+        await res.json({
+            msg: 'ok'
+        })
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+// chọn địa chỉ mặc định
+const chooseAddress = async (req, res) => {
+    try {
+        const {id_user, id_address} = req.query;
+        const check_address_default = await query(`SELECT 1 AS v FROM address WHERE id_of_user = '${id_user}' AND chosen = '1'`);
+        if (check_address_default[0] == undefined) {
+            const updateChooseAddress = await query(`UPDATE address SET chosen = '1' WHERE id_of_user = '${id_user}' AND id = '${id_address}'`);
+            await res.json({
+                msg: 'ok'
             })
-        } else {
-            if (req.file == undefined) {
-                res.json({
-                    msg: 'no_files_have_been_selected'
-                })
-            } else {
-                const {id_of_category, name_product, cost_product, description} = req.body;
-                if (name_product === '' || cost_product === '') {
-                    res.json({
-                        msg: 'important_parts_must_not_be_removed'
-                    })
-                } else {
-                    const sql0 = `SELECT name_category FROM danh_muc WHERE id = '${id_of_category}'`;
-                    connection.query(sql0, (err, result1) => {
-                        let data_name_category = (result1[0].name_category)
-
-                        const sql = `INSERT INTO san_pham (id, id_of_category, link_image, name_product, cost, name_category, description) VALUES (NULL ,'${id_of_category}','/upload/${req.file.filename}','${name_product}','${cost_product}','${data_name_category}','${description}') `;
-                        console.log(result1);
-                        connection.query(sql, (err) => {
-                            res.json({
-                                msg: 'is_allowed_to_post'
-                            })
-                            console.log(req.file.filename);
-                        })
-                    })
-                }
-            }
         }
-    });
-}
-
-// xem tất cả các sản phẩm
-const viewAllProduct = (req, res, next) => {
-    const sql1 = `SELECT * FROM danh_muc`;
-    const sql2 = `SELECT * FROM san_pham`;
-    connection.query(sql1, (err, result1) => {
-        connection.query(sql2, (err, result2) => {
-            //sql sản phẩm nhưng để tìm kiếm
-            res.render('admin/viewAllProduct', {result1, result2});
-        })
-    })
-
-
-}
-
-// xem chi tiết các sản phẩm, cho phép sửa nội dung sản phẩm
-const viewDetailProduct = (req, res, next) => {
-    let id = req.query.id;
-    const sql1 = `SELECT * FROM danh_muc`;
-    const sql2 = `SELECT * FROM san_pham`;
-    const sql3 = `SELECT * FROM san_pham WHERE id = '${id}'`;
-
-    connection.query(sql1, (err, result1) => {
-        connection.query(sql2, (err, result2) => {
-            connection.query(sql3, (err, result3) => {
-                if (err) throw err
-                res.render('admin/viewDetailProduct', {result1, result2, result3})
+        if (check_address_default[0].v == 1) {
+            const address_default = await query(`SELECT * FROM address WHERE id_of_user = '${id_user}' AND chosen = '1'`);
+            const id_address_default = address_default[0].id;
+            const reset_address_default = await query(`UPDATE address SET chosen = '0' WHERE id = '${id_address_default}'`);
+            const result_address_default = await query(`UPDATE address SET chosen = '1' WHERE id = '${id_address}'`);
+            await res.json({
+                msg: 'ok1'
             })
-        })
-    })
-}
-
-// xem tất cả các danh mục
-const viewAllCategory = async (req, res) => {
-    try {
-        const result_category = await query(`SELECT * FROM danh_muc`);
-        res.render(`admin/viewAllCategory`, {result_category});
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-// sửa danh mục
-const editCategory = async (req, res) => {
-    upload(req, res, async () => {
-        try {
-            const {input_edit_category} = req.body;
-            const id_category = req.query.id_category;
-            if (input_edit_category === '') {
-                res.json({
-                    msg: 'nothing'
-                })
-            } else {
-                const result_edit = await query(`UPDATE danh_muc SET name_category = '${input_edit_category}' WHERE id = '${id_category}'`);
-                const sql = `UPDATE danh_muc SET name_category = '${input_edit_category}' WHERE id = '${id_category}'`;
-                res.json({
-                    msg: 'ok'
-                })
-                console.log(sql);
-            }
-        } catch (e) {
-            console.log(e);
         }
-    })
-}
-
-// get name category
-const getNameCategory = async (req, res) => {
-    try {
-        const {id_category} = req.query;
-        const result_name_category = await query(`SELECT * FROM danh_muc WHERE id = '${id_category}'`);
-        res.json({
-            result_name_category
-        })
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 
-// xóa danh mục
-const deleteCategory = async (req, res) => {
+const useJson = async (req, res) => {
     try {
-        const {id_category} = req.query;
-        const deleteCategory = await query(`DELETE FROM danh_muc WHERE id = '${id_category}'`);
-        res.send("<script type='text/javascript'>window.open('/admin/viewAllCategory', '_self');</script>");
+        const {id_user} = req.query;
+        const result_address = await query(`SELECT * FROM address WHERE id_of_user = '${id_user}' AND chosen = '1'`);
+        await res.json({result_address});
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 
-// xóa sản phẩm
-const deleteProduct = async (req, res) => {
+// trang địa chỉ
+const pageAddress = async (req, res) => {
     try {
-        const id = req.query.id;
-        const result_delete = await query(`DELETE FROM san_pham WHERE id = '${id}'`);
-        res.send("<script type='text/javascript'>window.open('/admin/viewAllProduct', '_self');</script>");
+        const id_user = req.query.id_user;
+        const result_account = await query(`SELECT * FROM account_user WHERE id = '${id_user}'`);
+        const result_province = await query1(`SELECT * FROM devvn_tinhthanhpho`);
+        const result_address = await query(`SELECT * FROM address WHERE id_of_user = '${id_user}'`);
+
+        res.render(`user/address`, {id_user, result_account, result_province, result_address});
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 
-// chỉnh sửa sản phẩm
-const editProduct = (req, res) => {
-    upload(req, res, (err) => {
-        if (err) {
-            res.json({
-                msg: err
-            })
-        } else {
-            let id_geted = req.query.id;
-            const {id_of_category1, name_product1, cost_product1, description1} = req.body;
-            const sql4 = `SELECT name_category FROM danh_muc WHERE id = '${id_of_category1}'`;
-            const sql6 = `SELECT link_image FROM san_pham WHERE id = '${id_geted}'`
-            if (req.file === undefined) {
-                connection.query(sql6, (err, result6) => {
-                    connection.query(sql4, (err, result4) => {
-                        let data_name_category1 = (result4[0].name_category);
-                        let data_link_image1 = result6[0].link_image;
-                        const sql5 = `UPDATE san_pham SET id_of_category ='${id_of_category1}', 
-                            link_image = '${data_link_image1}', name_product = '${name_product1}', 
-                            cost ='${cost_product1}', name_category = '${data_name_category1}', 
-                            description = '${description1}' WHERE id = '${id_geted}'`;
-                        connection.query(sql5, (err, result5) => {
-                            res.json({
-                                msg: 'successful_editing'
-                            })
-                            console.log(result6[0].link_image);
-                        })
-                    })
-                })
-            } else {
-                connection.query(sql4, (err, result4) => {
-                    let data_name_category1 = (result4[0].name_category);
-                    const sql5 = `UPDATE san_pham SET id_of_category ='${id_of_category1}', 
-                            link_image = '/upload/${req.file.filename}', name_product = '${name_product1}', 
-                            cost ='${cost_product1}', name_category = '${data_name_category1}', 
-                            description = '${description1}' WHERE id = '${id_geted}'`;
-                    connection.query(sql5, (err, result5) => {
-                        res.json({
-                            msg: 'successful_editing'
-                        })
-                        console.log(req.file.filename);
-                    })
-                })
-            }
-        }
-    });
-}
 
-// Tìm kiếm theo danh mục
-const viewProductByCategory = (req, res) => {
-    let id_category = req.query.id;
-    let sql = `SELECT * FROM san_pham WHERE id_of_category = '${id_category}'`;
-    connection.query(sql, (err, result_of_search_by_category) => {
-        res.json({result_of_search_by_category});
-    })
-}
-
-//Load phần đăng nhập, đăng ký
-const loadLogin = (req, res) => {
-    res.render('login_user');
-}
-// *******************************************************************************
-
+// ********************************************************************************************************************
 
 module.exports = {
-    loadLogin, loadCategoryAndHome, homeUser, pageCart, profile_user, getDataProvince,
-    addCategory, addProduct, addCart, addComment, deleteProductFromCart, deleteProduct, addReplyComment,
-    viewAllProduct, viewDetailProduct, viewProductByCategory_user, viewProductByCategory, viewAllCategory,
-    editProduct, searchProduct, sumCost, toPay, pay, getReplyComment, editCategory, deleteCategory,
-    registerAccountUser, loginAccountUser, searchProductByMoney, getNameCategory, insertNumberPageToCookie,
-    detailProduct_User, pagination, addAddress, getAddress
+    loadLogin, homeUser, pageCart, profile_user, getDataProvince, addCart, addComment, deleteProductFromCart, addReplyComment,
+    sumCost, viewProductByCategory_user, searchProduct, pageTrackOder, getReplyComment, registerAccountUser,
+    loginAccountUser, searchProductByMoney, insertNumberPageToCookie, detailProduct_User,
+    pagination, addAddress, getAddress, useJson, getProductFromCart, pageProductConfirm, updateNumbersProduct,
+    chooseAddress, pageAddress
 }

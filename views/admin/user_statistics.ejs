@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phần cho admin - Theo dõi khách hàng</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/mdbootstrap/css/style.css">
+</head>
+
+<body>
+
+<!--    row 1-->
+<div>
+    <!--        nút home-->
+    <a class="navbar-brand" href="/admin/loadCategoryAndHome?id_admin=<%= id_admin %>">Trang chủ</a>
+    <div class="float-right">
+        <a class="navbar-brand" href="/loginAdmin">Đăng xuất</a>
+    </div>
+</div>
+
+<!-- Bắt đầu code-->
+<div class="container-fluid pb-2">
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">Mã người dùng</th>
+                <th scope="col">Tên người dùng</th>
+                <th scope="col">Tên đăng nhập</th>
+                <th scope="col">Mật khẩu</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% result_user.map((data_user)=>{ %>
+                <tr>
+                    <th scope="row"><a style="color: #4d84e2"
+                                       href="/user/pageTrackOderOfAdmin?id_admin=<%= id_admin %>&id_user=<%= data_user.id %>"><%= data_user.id %></a>
+                    </th>
+                    <td><%= data_user.name_user %></td>
+                    <td><%= data_user.username_user %></td>
+                    <td><%= data_user.password_user %></td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<!-- Kết thúc code-->
+
+<!--ckeditor-->
+<script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<!--<script type="text/javascript" src="/mdbootstrap/js/popper.min.js"></script>-->
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/mdbootstrap/js/mdb.min.js"></script>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+</html>

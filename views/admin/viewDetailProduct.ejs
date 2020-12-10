@@ -18,8 +18,8 @@
 <div class="container-fluid">
     <div>
         <% result3.map((row3)=>{ %>
-            <a class="navbar-brand" href="/admin/viewAllProduct">Quay lại</a>
-            <a class="navbar-brand" href="/admin/loadCategoryAndHome">Trang chủ</a>
+            <a class="navbar-brand" href="/admin/viewAllProduct?id_admin=<%=id_admin%>">Quay lại</a>
+            <a class="navbar-brand" href="/admin/loadCategoryAndHome?id_admin=<%= id_admin%>">Trang chủ</a>
             <div class="h2-responsive mb-5">Sửa sản phẩm</div>
             <div id="message"></div>
             <!--                    form thêm sản phẩm -->
@@ -120,8 +120,8 @@
         editor = await ClassicEditor
             .create(document.getElementById("ckeditor"), {
                 cloudServices: {
-                    uploadUrl: "https://75922.cke-cs.com/easyimage/upload/",
-                    tokenUrl: "https://75922.cke-cs.com/token/dev/1c8883ce4decb5dde5b864f51be5a698dcb2f6d50e89998e6f3981551ebc"
+                    uploadUrl: "https://76763.cke-cs.com/easyimage/upload/",
+                    tokenUrl: "https://76763.cke-cs.com/token/dev/f0560f93197e924b7c2fe504e5b47712ccb702b4cefdf96d1d0ed0ca1be1"
                 }
             });
     }

@@ -1,3 +1,46 @@
-<option id="  data.maqh  " value="  data.maqh  ">
-    data.name
-</option>
+const result = await axios.get(`/getAddress?id_user=<%= id_user %>`);
+const body = result.data;
+let html = '';
+html += '    <div class="row">\n' +
+    '        <div class="col-4"><h3>Địa chỉ của tôi</h3></div>\n' +
+    '        <div class="col-4"></div>\n' +
+    '        <div class="col-4">\n' +
+        '            <button class="btn btn-danger m-0" data-toggle="modal" data-target="#basicExampleModal"> ' +
+            'Thêm địa chỉ mới\n' +
+            '            </button>\n' +
+        '        </div>\n' +
+    '    </div>';
+body.result_address.map((data) => {
+html += '<div>\n' +
+    '    <hr/>\n' +
+    '    <div>\n' +
+        '        <div class="row mb-3">\n' +
+            '            <div class="col-3" style="color: #aaaaaa">\n' +
+                '                Họ & tên\n' +
+                '            </div>\n' +
+            '            <div class="col-6">' + data.name_receiver + '<span id="divChooseAddress' + data.id + '"></span></div>\n' +
+            '            <div class="col-3">\n' +
+                '                <div class="float-right"><u class="ml-3">Sửa</u> <u class="ml-3">Xóa</u></div>\n' +
+                '             </div>\n' +
+            '        </div>\n' +
+        '        <div class="row mb-3">\n' +
+            '            <div class="col-3" style="color: #aaaaaa">\n' +
+                '                Số điện thoại\n' +
+                '            </div>\n' +
+            '            <div class="col-6">' + data.number_receiver + '\n' +
+                '            </div>\n' +
+            '            <div class="col-3">\n' +
+                '                 <button type="button" onclick="btnChooseAdress(' + data.id + ')" class="form-control">\n' +
+                    '                          Thiết lập mặc định</button></div>\n' +
+            '        </div>\n' +
+        '        <div class="row mb-3">\n' +
+            '            <div class="col-3" style="color: #aaaaaa">\n' +
+                '                Địa chỉ\n' +
+                '            </div>\n' +
+            '            <div class="col-6">' + data.detail_address + '\n' +
+                '            </div>\n' +
+            '        </div>\n' +
+        '    </div>\n' +
+    '</div>';
+})
+document.getElementById("divData").innerHTML = html;

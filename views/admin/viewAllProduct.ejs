@@ -20,8 +20,9 @@
         <div id="display0">
             <div class="mb-4">
                 <!--        nút home-->
-                <a class="navbar-brand" href="/admin/loadCategoryAndHome">Trang chủ</a>
-                <a class="navbar-brand" href="/admin/viewAllCategory">Xem tổng quan danh mục</a>
+                <a class="navbar-brand" href="/admin/loadCategoryAndHome?id_admin=<%= id_admin %>">Trang chủ</a>
+                <a class="navbar-brand" href="/admin/viewAllCategory?id_admin=<%= id_admin %>">Xem tổng quan danh
+                    mục</a>
             </div>
 
             <div class="row mb-2">
@@ -62,7 +63,8 @@
                         <li class="nav-item mt-4 ml-3">
                             <ul class="nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/admin/viewDetailProduct?id=<%= row2.id %>">Xem</a>
+                                    <a class="nav-link"
+                                       href="/admin/viewDetailProduct?id_admin=<%= id_admin %>&id=<%= row2.id %>">Xem</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/deleteProduct?id=<%= row2.id %>">Xóa</a>
@@ -126,7 +128,7 @@
                         '                <a class="nav-link" href="/viewDetailProduct?id=' + data1.id + '">Xem</a>\n' +
                         '            </li>\n' +
                         '            <li class="nav-item">' +
-                        '               <a class="nav-link" href="/deleteProduct?id='+data1.id+'">Xóa</a>' +
+                        '               <a class="nav-link" href="/deleteProduct?id=' + data1.id + '">Xóa</a>' +
                         '           </li>\n' +
                         '        </ul>\n' +
                         '    </li>\n' +
@@ -176,7 +178,7 @@
                     '            <li class="nav-item">\n' +
                     '                <a class="nav-link" href="/viewDetailProduct?id=' + data1.id + '">Xem</a>\n' +
                     '            </li>\n' +
-                    '            <li class="nav-item"><a href="/deleteProduct?id='+data1.id+'" class="nav-link">Xóa</a></li>\n' +
+                    '            <li class="nav-item"><a href="/deleteProduct?id=' + data1.id + '" class="nav-link">Xóa</a></li>\n' +
                     '        </ul>\n' +
                     '    </li>\n' +
                     '</ul>\n' +

@@ -17,88 +17,7 @@
 <body>
 
 
-<div>
-    <div class="row">
-        <div class="col-4"><h3>Địa chỉ của tôi</h3></div>
-        <div class="col-4"></div>
-        <div class="col-4">
-            <button class="btn btn-danger m-0" data-toggle="modal" data-target="#basicExampleModal">+ Thêm địa chỉ mới
-            </button>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div>
-                            <h5>Thêm 1 địa chỉ mới</h5>
-                            <div class="md-form">
-                                <input placeholder="Họ & tên" type="text" id="receiver" class="form-control">
-                            </div>
-
-                            <div class="md-form">
-                                <input placeholder="Số điện thoại" type="text" id="numberPhoneReceiver"
-                                       class="form-control">
-                            </div>
-
-                            <select class="browser-default custom-select mb-4">
-                                <option hidden>Tỉnh/Thành phố</option>
-                            </select>
-
-                            <select class="browser-default custom-select mb-4">
-                                <option hidden>Quận/Huyện</option>
-                            </select>
-
-                            <select class="browser-default custom-select">
-                                <option hidden>Phường/Xã</option>
-                            </select>
-
-                            <div class="md-form">
-                                <input placeholder="Địa chỉ" type="text" id="detailAddress" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div>
-        <div class="row mb-3">
-            <div class="col-4" style="color: #aaaaaa">
-                Họ & tên
-            </div>
-            <div class="col-8">
-                Norman
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-4" style="color: #aaaaaa">
-                Số điện thoại
-            </div>
-            <div class="col-8">
-                0868676043
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-4" style="color: #aaaaaa">
-                Địa chỉ
-            </div>
-            <div class="col-8">
-                Ký túc xá trường cao đẳng công nghệ thông tin,
-                Phường Hòa Quý,
-                Quận Ngũ Hành Sơn,
-                Đà Nẵng
-            </div>
-        </div>
-    </div>
-</div>
+<div id="divData"></div>
 
 
 <!-- jQuery -->
@@ -113,18 +32,19 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/20.0.0/classic/ckeditor.js"></script>
 
 <script>
-    let editor;
-    const initEditor = async () => {
-        editor = await ClassicEditor
-            .create(document.getElementById("ckeditor"), {
-                cloudServices: {
-                    uploadUrl: "https://75171.cke-cs.com/easyimage/upload/",
-                    tokenUrl: "https://75171.cke-cs.com/token/dev/a8c66df7e644b064314258f9274a73a02d361d2236ee2da40da2f66bf333"
-                }
-            });
-    }
-    initEditor();
-
+    (()=>{
+        const divData = document.getElementById("divData");
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function (){
+            if (this.status === 200){
+                divData.innerHTML = xhr.responseText
+            }else {
+                console.warn('nothing');
+            }
+        }
+        xhr.open('get', 'test1.html');
+        xhr.send();
+    })()
 </script>
 
 </body>

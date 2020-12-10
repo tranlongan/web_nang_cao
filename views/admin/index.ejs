@@ -16,17 +16,16 @@
 </head>
 
 <body>
+<!--    row 1-->
+<div>
+    <!--        nút home-->
+    <a class="navbar-brand" href="/admin/loadCategoryAndHome?id_admin=<%= id_admin %>">Trang chủ</a>
+    <div class="float-right">
+        <a class="navbar-brand" href="/loginAdmin">Đăng xuất</a>
+    </div>
+</div>
 <!-- Bắt đầu code-->
 <div class="container-fluid">
-    <!--    row 1-->
-    <div class="row">
-        <!--        nút home-->
-        <a class="navbar-brand" href="/admin/loadCategoryAndHome">Trang chủ</a>
-        <div class="float-right">
-            <a class="navbar-brand" href="/">Đăng xuất</a>
-        </div>
-    </div>
-
     <div id="data_viewAllProduct">
         <!--        nav list-->
         <ul class="nav grey lighten-4 py-4">
@@ -40,13 +39,15 @@
                 <a class="nav-link" type="button" onclick="btnAppendProduct()">Thêm sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/viewAllProduct">Xem tổng quan các sản phẩm</a>
+                <a class="nav-link" href="/admin/viewAllProduct?id_admin=<%= id_admin %>">Xem tổng quan các sản phẩm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/user_statistics?id_admin=<%= id_admin %>">Thống kê người sử dụng</a>
             </li>
         </ul>
 
         <!--    row 2-->
         <div class="row">
-
             <!--        phần danh mục-->
             <div class="col-3">
                 <div>
@@ -75,7 +76,7 @@
                                     <div class="view overlay">
                                         <img class="card-img-top" style="height: 348px" src="<%= row1.link_image %>"
                                              alt="Card image cap">
-                                        <a href="#!">
+                                        <a href="/admin/detailProduct_admin?id_admin=<%= id_admin %>&id_product=<%= row1.id %>">
                                             <div class="mask rgba-white-slight"></div>
                                         </a>
                                     </div>
@@ -83,7 +84,7 @@
                                     <!--Card content-->
                                     <div class="card-body">
                                         <!--Title-->
-                                        <h4 class="card-title"><%= row1.name_product %></h4>
+                                        <h5 class="card-title"><%= row1.name_product %></h5>
                                         <!--Review-->
                                         <i class='fas fa-star blue-text'> </i>
                                         <i class='fas fa-star blue-text'> </i>
@@ -319,7 +320,7 @@
                     '                <i class=\'fas fa-star blue-text\'> </i>\n' +
                     '                <i class=\'fas fa-star blue-text\'> </i>\n' +
                     '                <i class=\'fas fa-star blue-text\'> </i>\n' +
-                    '                <p>' + data.cost + ' VNĐ</p>\n' +
+                    '                <p>' + Intl.NumberFormat().format(data.cost) + ' VNĐ</p>\n' +
                     '            </div>\n' +
                     '        </div>\n' +
                     '        <!-- Card -->\n' +
@@ -348,14 +349,9 @@
         editor = await ClassicEditor
             .create(document.getElementById("ckeditor"), {
                 cloudServices: {
-                    uploadUrl: "https://75922.cke-cs.com/easyimage/upload/",
-                    tokenUrl: "https://75922.cke-cs.com/token/dev/1c8883ce4decb5dde5b864f51be5a698dcb2f6d50e89998e6f3981551ebc"
+                    uploadUrl: "https://76763.cke-cs.com/easyimage/upload/",
+                    tokenUrl: "https://76763.cke-cs.com/token/dev/f0560f93197e924b7c2fe504e5b47712ccb702b4cefdf96d1d0ed0ca1be1"
                 }
-            });
-        editor = await DecoupledEditor
-            .create(document.getElementById('#editor'), editor => {
-                const toolbarContainer = document.querySelector('#toolbar-container');
-                toolbarContainer.appendChild(editor.ui.view.toolbar.element);
             });
     }
 

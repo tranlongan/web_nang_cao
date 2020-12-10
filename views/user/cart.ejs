@@ -17,18 +17,9 @@
 
 <body>
 
+<%- include('path_div/navBarHome.ejs') %>
 <!-- Bắt đầu code-->
-<div class="container-fluid pb-2" style="background-color: gainsboro">
-    <!--    row 1-->
-    <div>
-        <a class="navbar-brand" href="/homeUser?id_user=<%= id_geted %>">Trang chủ</a>
-        <!--        nút home-->
-        <div class="float-right">
-            <div class="navbar-brand">Xin chào <span
-                        style="font-weight: bolder"><%= result_account[0].name_user %></span></div>
-            <a class="navbar-brand" href="/">Đăng xuất</a>
-        </div>
-    </div>
+<div class="container-fluid pb-2 pt-2" style="background-color: gainsboro">
     <div class="row">
         <div class="col-9">
             <% result_user_cart.map((row)=>{ %>
@@ -41,7 +32,7 @@
                             <%= row.name_product %>
                         </div>
                         <div>
-                            <a href="/deleteProductFromCart?id_user=<%= id_geted %>&id_product=<%= row.id_of_product %>">Để
+                            <a href="/deleteProductFromCart?id_user=<%= id_user %>&id_product=<%= row.id_of_product %>">Để
                                 khi khác mua</a>
                         </div>
                     </div>
@@ -52,26 +43,83 @@
                     </div>
                     <div class="col-2 mt-4">
                         <div>
-                            <button class="btn pl-3 pr-3 pt-1 pb-1">-</button>
-                            <input type="text" id="numbers" name="numbers" value="<%= row.numbers %>"
-                                   style="width: 30px; height: 26px; text-align: center">
-                            <button class="btn pl-3 pr-3 pt-1 pb-1">+</button>
+                            <button id="btnMinus" name="btnMinus" class="btn pl-3 pr-3 pt-1 pb-1" type="button"
+                                    onclick="btnMinus(<%= row.id_of_product %>, <%= row.id %>)">-
+                            </button>
+                            <input type="text" id="numbers<%= row.id %>" value="<%= row.numbers %>"
+                                   style="width: 30px; height: 26px; text-align: center" disabled>
+                            <button class="btn pl-3 pr-3 pt-1 pb-1" type="button"
+                                    onclick="btnPlus(<%= row.id_of_product %>, <%= row.id %>)">+
+                            </button>
                         </div>
                     </div>
                 </div>
             <% }) %>
         </div>
-        <div class="col-3 mb-1 p-5" style="background-color: white;">
-            <div>
-                Thành tiền:
-                <span class="float-right" style="color: red;font-weight: bolder"> đ</span>
-                <span class="float-right" id="sumCost" style="color: red; font-size: 20px; font-weight: bolder"></span>
-            </div>
-            <div>
-                <button id="clickTotal" style="max-width: inherit; width: 100%"
-                   class="btn btn-danger">
-                    Tiến hành đặt hàng
-                </button>
+        <div class="col-3 mb-1 p-3">
+            <% result_address_default.map((data_address_default)=>{ %>
+                <div style="background-color: white" class="mb-2 p-1">
+                    <font class="h6">Địa chỉ nhận hàng</font><span class="float-right"><a>Thay đổi</a></span>
+                    <div>
+                        <font class="mr-2 h6"><%= data_address_default.name_receiver %></font> | <span
+                                class="ml-2 h6"><%= data_address_default.number_receiver %></span>
+                    </div>
+                    <div class="blockquote-footer">
+                        <input type="text" id="inputAddressDefault" value="<%= data_address_default.id %>" hidden>
+                        <%= data_address_default.detail_address%>
+                    </div>
+                </div>
+            <% }) %>
+            <div style="background-color: white" class="pr-3">
+                <div>
+                    Thành tiền:
+                    <span class="float-right" style="color: red;font-weight: bolder"> đ</span>
+                    <span class="float-right" id="sumCost"
+                          style="color: red; font-size: 20px; font-weight: bolder"></span>
+                </div>
+                <div>
+                    <button type="button" data-toggle="modal" data-target="#centralModalSuccess"
+                            style="max-width: inherit; width: 100%" class="btn btn-danger">
+                        Tiến hành đặt hàng
+                    </button>
+
+                    <!-- form giỏ hàng -->
+                    <div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-notify modal-success" role="document">
+                            <!--Content-->
+                            <div class="modal-content">
+                                <!--Header-->
+                                <div class="modal-header">
+                                    <p class="heading lead">Xác nhận đơn hàng</p>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true" class="white-text">&times;</span>
+                                    </button>
+                                </div>
+
+                                <!--Body-->
+                                <div class="modal-body">
+                                    <div class="text-center">
+                                        <i class="fas fa-check fa-4x mb-3 animated rotateIn"></i>
+                                        <p>Bạn chắc chắn muốn thanh toán tất cả mặt hàng mình đã chọn </p>
+                                    </div>
+                                </div>
+
+                                <!--Footer-->
+                                <div class="modal-footer justify-content-center">
+                                    <a type="button" onclick="btnConfirmProduct(<%= id_user %>)"  class="btn btn-success">
+                                        Vâng! Tôi chắc chắn</a>
+                                    <a type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">
+                                        Tôi sẽ suy nghĩ lại!
+                                    </a>
+                                </div>
+                            </div>
+                            <!--/.Content-->
+                        </div>
+                    </div>
+                    <!-- Central Modal Medium Success-->
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +143,8 @@
     (async () => {
         const value_sumCost = document.getElementById("sumCost");
         try {
-            const result = await axios.get(`/sumCost?id_user=${<%= id_geted %>}`);
+            const valueNumbersProduct = '';
+            const result = await axios.get(`/sumCost?id_user=${<%= id_user %>}`);
             const body = result.data.result_sum_cost;
             console.log(body);
             let sum = 0, sumCost = 0;
@@ -108,7 +157,7 @@
                 console.log('Sum all cost = ', sumCost);
             }
             value_sumCost.innerHTML = new Intl.NumberFormat().format(sumCost);
-            totalFn(sumCost);
+
         } catch (e) {
             console.error(e);
         }
@@ -118,11 +167,50 @@
 </script>
 
 <script>
-    const totalFn = async (sumCost) => {
-        document.getElementById("clickTotal").addEventListener("click", do_ => {
-            const result1 = axios.get(`/user/toPay?id_user=${<%= id_geted %>}&total_money=${sumCost}`);
-            window.open(`/user/pay?id_user=${<%= id_geted %>}`,`_self`);
-        });
+    const btnMinus = async (id_product, id_cart) => {
+        try {
+            let original = 0;
+            const valueNumbersProduct = document.getElementById("numbers" + id_cart).value;
+            if (valueNumbersProduct === '1') {
+                return
+            } else {
+                document.getElementById("btnMinus").disabled = "false";
+                original = parseInt(valueNumbersProduct) - 1;
+                const result = await axios.post(`/updateNumbersProduct?id_product=${id_product}&id_cart=${id_cart}`, {original});
+                const body = result.data;
+                if (body.msg === 'ok') {
+                    window.open(`/user/pageCart?id_user=<%= id_user %>`, `_self`);
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const btnPlus = async (id_product, id_cart) => {
+        try {
+            let original = 0;
+            const valueNumbersProduct = document.getElementById("numbers" + id_cart).value;
+            original = parseInt(valueNumbersProduct) + 1;
+            const result = await axios.post(`/updateNumbersProduct?id_product=${id_product}&id_cart=${id_cart}`, {original});
+            const body = result.data;
+            if (body.msg === 'ok') {
+                window.open(`/user/pageCart?id_user=<%= id_user %>`, `_self`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+
+<script>
+    const btnConfirmProduct = async (id_user)=>{
+        try {
+            const id_address = document.getElementById("inputAddressDefault").value;
+            const result = await axios.get(`/user/pageProductFromCart?id_user=${id_user}&id_address=${id_address}`);
+            window.open(`/user/pageTrackOder?id_user=${id_user}`,`_self`);
+        }catch (e) {
+            console.error(e);
+        }
     }
 </script>
 </body>
